@@ -2,6 +2,7 @@ package player;
 
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerConfig;
+import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -127,7 +128,7 @@ public class Play implements Runnable{
         try {
             JSONObject jsonObject = (JSONObject) jsonParser.parse(log);
             String jsonLog = String.valueOf(jsonObject);
-            //producer.send(new ProducerRecord<>(TOPIC_NAME, jsonLog));
+            producer.send(new ProducerRecord<>(TOPIC_NAME, jsonLog));
             System.out.println(jsonLog);
         } catch (ParseException e) {
             throw new RuntimeException(e);
