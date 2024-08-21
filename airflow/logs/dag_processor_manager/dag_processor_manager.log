@@ -1,0 +1,665 @@
+[2024-08-18T12:21:59.237+0000] {manager.py:483} INFO - Processing files using up to 2 processes at a time 
+[2024-08-18T12:21:59.238+0000] {manager.py:484} INFO - Process each file at most once every 30 seconds
+[2024-08-18T12:21:59.238+0000] {manager.py:485} INFO - Checking for new files in /opt/airflow/dags every 300 seconds
+[2024-08-18T12:21:59.239+0000] {manager.py:821} INFO - Searching for files in /opt/airflow/dags
+[2024-08-18T12:21:59.241+0000] {manager.py:824} INFO - There are 0 files in /opt/airflow/dags
+[2024-08-18T12:23:18.118+0000] {manager.py:465} INFO - Exiting gracefully upon receiving signal 15
+[2024-08-18T12:23:55.141+0000] {manager.py:483} INFO - Processing files using up to 2 processes at a time 
+[2024-08-18T12:23:55.143+0000] {manager.py:484} INFO - Process each file at most once every 30 seconds
+[2024-08-18T12:23:55.144+0000] {manager.py:485} INFO - Checking for new files in /opt/airflow/dags every 300 seconds
+[2024-08-18T12:23:55.144+0000] {manager.py:821} INFO - Searching for files in /opt/airflow/dags
+[2024-08-18T12:23:55.146+0000] {manager.py:824} INFO - There are 0 files in /opt/airflow/dags
+[2024-08-18T12:30:27.820+0000] {manager.py:483} INFO - Processing files using up to 2 processes at a time 
+[2024-08-18T12:30:27.821+0000] {manager.py:484} INFO - Process each file at most once every 30 seconds
+[2024-08-18T12:30:27.821+0000] {manager.py:485} INFO - Checking for new files in /opt/airflow/dags every 300 seconds
+[2024-08-18T12:30:27.822+0000] {manager.py:821} INFO - Searching for files in /opt/airflow/dags
+[2024-08-18T12:30:27.823+0000] {manager.py:824} INFO - There are 0 files in /opt/airflow/dags
+[2024-08-18T12:35:28.735+0000] {manager.py:821} INFO - Searching for files in /opt/airflow/dags
+[2024-08-18T12:35:28.736+0000] {manager.py:824} INFO - There are 0 files in /opt/airflow/dags
+[2024-08-18T12:40:29.273+0000] {manager.py:821} INFO - Searching for files in /opt/airflow/dags
+[2024-08-18T12:40:29.274+0000] {manager.py:824} INFO - There are 0 files in /opt/airflow/dags
+[2024-08-18T12:40:32.888+0000] {manager.py:465} INFO - Exiting gracefully upon receiving signal 15
+[2024-08-18T12:44:10.200+0000] {manager.py:483} INFO - Processing files using up to 2 processes at a time 
+[2024-08-18T12:44:10.201+0000] {manager.py:484} INFO - Process each file at most once every 30 seconds
+[2024-08-18T12:44:10.202+0000] {manager.py:485} INFO - Checking for new files in /opt/airflow/dags every 300 seconds
+[2024-08-18T12:44:10.202+0000] {manager.py:821} INFO - Searching for files in /opt/airflow/dags
+[2024-08-18T12:44:10.204+0000] {manager.py:824} INFO - There are 0 files in /opt/airflow/dags
+[2024-08-18T12:44:22.918+0000] {manager.py:465} INFO - Exiting gracefully upon receiving signal 15
+[2024-08-18T12:49:39.090+0000] {manager.py:483} INFO - Processing files using up to 2 processes at a time 
+[2024-08-18T12:49:39.091+0000] {manager.py:484} INFO - Process each file at most once every 30 seconds
+[2024-08-18T12:49:39.092+0000] {manager.py:485} INFO - Checking for new files in /opt/airflow/dags every 300 seconds
+[2024-08-18T12:49:39.092+0000] {manager.py:821} INFO - Searching for files in /opt/airflow/dags
+[2024-08-18T12:49:39.094+0000] {manager.py:824} INFO - There are 0 files in /opt/airflow/dags
+[2024-08-18T12:54:26.904+0000] {manager.py:465} INFO - Exiting gracefully upon receiving signal 15
+[2024-08-18T13:03:16.141+0000] {manager.py:483} INFO - Processing files using up to 2 processes at a time 
+[2024-08-18T13:03:16.142+0000] {manager.py:484} INFO - Process each file at most once every 30 seconds
+[2024-08-18T13:03:16.143+0000] {manager.py:485} INFO - Checking for new files in /opt/airflow/dags every 300 seconds
+[2024-08-18T13:03:16.144+0000] {manager.py:821} INFO - Searching for files in /opt/airflow/dags
+[2024-08-18T13:03:16.145+0000] {manager.py:824} INFO - There are 0 files in /opt/airflow/dags
+[2024-08-18T13:08:16.836+0000] {manager.py:821} INFO - Searching for files in /opt/airflow/dags
+[2024-08-18T13:08:16.837+0000] {manager.py:824} INFO - There are 0 files in /opt/airflow/dags
+[2024-08-18T13:13:17.474+0000] {manager.py:821} INFO - Searching for files in /opt/airflow/dags
+[2024-08-18T13:13:17.475+0000] {manager.py:824} INFO - There are 1 files in /opt/airflow/dags
+[2024-08-18T13:13:25.636+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                  PID    Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+-------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/test.py                           1           0  0.95s           2024-08-18T13:13:18                      26
+================================================================================
+[2024-08-18T13:13:56.112+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                  PID    Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+-------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/test.py                           1           0  0.20s           2024-08-18T13:13:49                      12
+================================================================================
+[2024-08-18T13:14:26.798+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                  PID    Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+-------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/test.py                           1           0  0.22s           2024-08-18T13:14:19                      12
+================================================================================
+[2024-08-18T13:14:44.905+0000] {manager.py:465} INFO - Exiting gracefully upon receiving signal 15
+[2024-08-18T13:18:55.195+0000] {manager.py:483} INFO - Processing files using up to 2 processes at a time 
+[2024-08-18T13:18:55.196+0000] {manager.py:484} INFO - Process each file at most once every 30 seconds
+[2024-08-18T13:18:55.197+0000] {manager.py:485} INFO - Checking for new files in /opt/airflow/dags every 300 seconds
+[2024-08-18T13:18:55.197+0000] {manager.py:821} INFO - Searching for files in /opt/airflow/dags
+[2024-08-18T13:18:55.200+0000] {manager.py:824} INFO - There are 1 files in /opt/airflow/dags
+[2024-08-18T13:18:55.344+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                    PID  Runtime      # DAGs    # Errors  Last Runtime    Last Run      Last # of DB Queries
+-------------------------  -----  ---------  --------  ----------  --------------  ----------  ----------------------
+/opt/airflow/dags/test.py     78  0.04s             0           0                                                   0
+================================================================================
+[2024-08-18T13:19:25.466+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                  PID    Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+-------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/test.py                           1           0  0.72s           2024-08-18T13:18:56                      26
+================================================================================
+[2024-08-18T13:19:55.918+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                  PID    Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+-------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/test.py                           1           0  0.26s           2024-08-18T13:19:26                      12
+================================================================================
+[2024-08-18T13:20:26.365+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                  PID    Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+-------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/test.py                           1           0  0.23s           2024-08-18T13:19:57                      12
+================================================================================
+[2024-08-18T13:20:57.024+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                  PID    Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+-------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/test.py                           1           0  0.26s           2024-08-18T13:20:27                      12
+================================================================================
+[2024-08-18T13:21:27.527+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                  PID    Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+-------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/test.py                           1           0  0.24s           2024-08-18T13:20:58                      12
+================================================================================
+[2024-08-18T13:21:58.266+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                  PID    Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+-------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/test.py                           1           0  0.24s           2024-08-18T13:21:28                      12
+================================================================================
+[2024-08-18T13:22:28.765+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                  PID    Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+-------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/test.py                           1           0  0.23s           2024-08-18T13:21:59                      12
+================================================================================
+[2024-08-18T13:22:59.225+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                  PID    Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+-------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/test.py                           1           0  0.21s           2024-08-18T13:22:29                      12
+================================================================================
+[2024-08-18T13:23:29.921+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                  PID    Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+-------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/test.py                           1           0  0.22s           2024-08-18T13:23:00                      12
+================================================================================
+[2024-08-18T13:23:55.341+0000] {manager.py:821} INFO - Searching for files in /opt/airflow/dags
+[2024-08-18T13:23:55.344+0000] {manager.py:824} INFO - There are 1 files in /opt/airflow/dags
+[2024-08-18T13:24:00.507+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                  PID    Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+-------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/test.py                           1           0  0.22s           2024-08-18T13:23:31                      12
+================================================================================
+[2024-08-18T13:24:31.060+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                  PID    Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+-------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/test.py                           1           0  0.21s           2024-08-18T13:24:01                      12
+================================================================================
+[2024-08-18T13:25:01.255+0000] {manager.py:465} INFO - Exiting gracefully upon receiving signal 15
+[2024-08-18T13:27:24.818+0000] {manager.py:483} INFO - Processing files using up to 2 processes at a time 
+[2024-08-18T13:27:24.819+0000] {manager.py:484} INFO - Process each file at most once every 30 seconds
+[2024-08-18T13:27:24.820+0000] {manager.py:485} INFO - Checking for new files in /opt/airflow/dags every 300 seconds
+[2024-08-18T13:27:24.820+0000] {manager.py:821} INFO - Searching for files in /opt/airflow/dags
+[2024-08-18T13:27:24.823+0000] {manager.py:824} INFO - There are 1 files in /opt/airflow/dags
+[2024-08-18T13:27:24.980+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                    PID  Runtime      # DAGs    # Errors  Last Runtime    Last Run      Last # of DB Queries
+-------------------------  -----  ---------  --------  ----------  --------------  ----------  ----------------------
+/opt/airflow/dags/test.py     77  0.05s             0           0                                                   0
+================================================================================
+[2024-08-18T13:27:55.464+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                    PID  Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+-------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/test.py     84  0.01s             1           0  0.30s           2024-08-18T13:27:25                      12
+================================================================================
+[2024-08-18T13:28:25.972+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                    PID  Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+-------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/test.py     91  0.01s             1           0  0.20s           2024-08-18T13:27:55                      12
+================================================================================
+[2024-08-18T13:28:56.673+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                    PID  Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+-------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/test.py     98  0.01s             1           0  0.23s           2024-08-18T13:28:26                      12
+================================================================================
+[2024-08-18T13:29:27.250+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                    PID  Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+-------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/test.py    104  0.01s             1           0  0.20s           2024-08-18T13:28:56                      12
+================================================================================
+[2024-08-18T13:29:57.903+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                    PID  Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+-------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/test.py    112  0.01s             1           0  0.21s           2024-08-18T13:29:27                      12
+================================================================================
+[2024-08-18T13:30:28.450+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                    PID  Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+-------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/test.py    119  0.01s             1           0  0.24s           2024-08-18T13:29:58                      12
+================================================================================
+[2024-08-18T13:30:59.175+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                    PID  Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+-------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/test.py    126  0.01s             1           0  0.26s           2024-08-18T13:30:28                      12
+================================================================================
+[2024-08-18T13:31:29.749+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                    PID  Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+-------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/test.py    133  0.01s             1           0  0.25s           2024-08-18T13:30:59                      12
+================================================================================
+[2024-08-18T13:32:00.442+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                    PID  Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+-------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/test.py    139  0.01s             1           0  0.22s           2024-08-18T13:31:29                      12
+================================================================================
+[2024-08-18T13:32:24.849+0000] {manager.py:821} INFO - Searching for files in /opt/airflow/dags
+[2024-08-18T13:32:24.852+0000] {manager.py:824} INFO - There are 1 files in /opt/airflow/dags
+[2024-08-18T13:32:31.004+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                    PID  Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+-------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/test.py    145  0.01s             1           0  0.20s           2024-08-18T13:32:00                      12
+================================================================================
+[2024-08-18T13:33:01.643+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                    PID  Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+-------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/test.py    152  0.01s             1           0  0.23s           2024-08-18T13:32:31                      12
+================================================================================
+[2024-08-18T13:33:32.271+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                    PID  Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+-------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/test.py    159  0.01s             1           0  0.24s           2024-08-18T13:33:01                      12
+================================================================================
+[2024-08-18T13:34:02.937+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                    PID  Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+-------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/test.py    166  0.01s             1           0  0.47s           2024-08-18T13:33:32                      12
+================================================================================
+[2024-08-18T13:34:33.748+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                    PID  Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+-------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/test.py    174  0.01s             1           0  0.44s           2024-08-18T13:34:03                      12
+================================================================================
+[2024-08-18T13:34:59.052+0000] {manager.py:465} INFO - Exiting gracefully upon receiving signal 15
+[2024-08-19T14:55:39.404+0000] {manager.py:483} INFO - Processing files using up to 2 processes at a time 
+[2024-08-19T14:55:39.405+0000] {manager.py:484} INFO - Process each file at most once every 30 seconds
+[2024-08-19T14:55:39.406+0000] {manager.py:485} INFO - Checking for new files in /opt/airflow/dags every 300 seconds
+[2024-08-19T14:55:39.406+0000] {manager.py:821} INFO - Searching for files in /opt/airflow/dags
+[2024-08-19T14:55:39.408+0000] {manager.py:824} INFO - There are 1 files in /opt/airflow/dags
+[2024-08-19T14:55:39.581+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                    PID  Runtime      # DAGs    # Errors  Last Runtime    Last Run      Last # of DB Queries
+-------------------------  -----  ---------  --------  ----------  --------------  ----------  ----------------------
+/opt/airflow/dags/test.py     64  0.05s             0           0                                                   0
+================================================================================
+[2024-08-19T14:56:10.050+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                    PID  Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+-------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/test.py     71  0.01s             1           0  0.30s           2024-08-19T14:55:39                      12
+================================================================================
+[2024-08-19T14:56:40.706+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                    PID  Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+-------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/test.py     78  0.01s             1           0  0.24s           2024-08-19T14:56:10                      12
+================================================================================
+[2024-08-19T14:57:11.138+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                    PID  Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+-------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/test.py     85  0.01s             1           0  0.22s           2024-08-19T14:56:40                      12
+================================================================================
+[2024-08-19T14:57:41.746+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                    PID  Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+-------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/test.py     97  0.01s             1           0  0.20s           2024-08-19T14:57:11                      12
+================================================================================
+[2024-08-19T14:58:12.204+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                    PID  Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+-------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/test.py    103  0.01s             1           0  0.23s           2024-08-19T14:57:41                      12
+================================================================================
+[2024-08-19T14:58:42.853+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                    PID  Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+-------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/test.py    110  0.01s             1           0  0.25s           2024-08-19T14:58:12                      12
+================================================================================
+[2024-08-19T14:59:13.335+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                    PID  Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+-------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/test.py    117  0.01s             1           0  0.34s           2024-08-19T14:58:43                      12
+================================================================================
+[2024-08-19T14:59:43.949+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                  PID    Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+-------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/test.py                           1           0  0.23s           2024-08-19T14:59:22                      12
+================================================================================
+[2024-08-19T15:00:14.376+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                  PID    Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+-------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/test.py                           1           0  0.21s           2024-08-19T14:59:53                      12
+================================================================================
+[2024-08-19T15:00:39.938+0000] {manager.py:821} INFO - Searching for files in /opt/airflow/dags
+[2024-08-19T15:00:39.940+0000] {manager.py:824} INFO - There are 1 files in /opt/airflow/dags
+[2024-08-19T15:00:45.051+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                  PID    Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+-------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/test.py                           1           0  0.19s           2024-08-19T15:00:23                      12
+================================================================================
+[2024-08-19T15:01:08.031+0000] {manager.py:465} INFO - Exiting gracefully upon receiving signal 15
+[2024-08-19T15:05:19.623+0000] {manager.py:483} INFO - Processing files using up to 2 processes at a time 
+[2024-08-19T15:05:19.624+0000] {manager.py:484} INFO - Process each file at most once every 30 seconds
+[2024-08-19T15:05:19.625+0000] {manager.py:485} INFO - Checking for new files in /opt/airflow/dags every 300 seconds
+[2024-08-19T15:05:19.625+0000] {manager.py:821} INFO - Searching for files in /opt/airflow/dags
+[2024-08-19T15:05:19.628+0000] {manager.py:824} INFO - There are 1 files in /opt/airflow/dags
+[2024-08-19T15:05:19.784+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                    PID  Runtime      # DAGs    # Errors  Last Runtime    Last Run      Last # of DB Queries
+-------------------------  -----  ---------  --------  ----------  --------------  ----------  ----------------------
+/opt/airflow/dags/test.py     76  0.05s             0           0                                                   0
+================================================================================
+[2024-08-19T15:05:50.206+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                    PID  Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+-------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/test.py     84  0.01s             1           0  0.26s           2024-08-19T15:05:19                      12
+================================================================================
+[2024-08-19T15:06:20.643+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                    PID  Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+-------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/test.py     91  0.01s             1           0  0.20s           2024-08-19T15:05:50                      12
+================================================================================
+[2024-08-19T15:06:51.243+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                    PID  Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+-------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/test.py     99  0.01s             1           0  0.20s           2024-08-19T15:06:20                      12
+================================================================================
+[2024-08-19T15:07:21.695+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                    PID  Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+-------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/test.py    106  0.01s             1           0  0.23s           2024-08-19T15:06:51                      12
+================================================================================
+[2024-08-19T15:07:52.391+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                    PID  Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+-------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/test.py    113  0.02s             1           0  0.23s           2024-08-19T15:07:21                      12
+================================================================================
+[2024-08-19T15:08:22.868+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                    PID  Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+-------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/test.py    120  0.01s             1           0  0.37s           2024-08-19T15:07:52                      12
+================================================================================
+[2024-08-19T15:08:53.317+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                    PID  Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+-------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/test.py    127  0.01s             1           0  0.22s           2024-08-19T15:08:23                      12
+================================================================================
+[2024-08-19T15:09:23.956+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                    PID  Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+-------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/test.py    134  0.01s             1           0  0.27s           2024-08-19T15:08:53                      12
+================================================================================
+[2024-08-19T15:09:54.443+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                    PID  Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+-------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/test.py    141  0.01s             1           0  0.21s           2024-08-19T15:09:24                      12
+================================================================================
+[2024-08-19T15:10:19.921+0000] {manager.py:821} INFO - Searching for files in /opt/airflow/dags
+[2024-08-19T15:10:19.923+0000] {manager.py:824} INFO - There are 1 files in /opt/airflow/dags
+[2024-08-19T15:10:25.046+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                    PID  Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+-------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/test.py    148  0.01s             1           0  0.23s           2024-08-19T15:09:54                      12
+================================================================================
+[2024-08-19T15:10:55.574+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                    PID  Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+-------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/test.py    155  0.01s             1           0  0.28s           2024-08-19T15:10:25                      12
+================================================================================
+[2024-08-19T15:11:26.195+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                    PID  Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+-------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/test.py    162  0.01s             1           0  0.21s           2024-08-19T15:10:55                      12
+================================================================================
+[2024-08-19T15:11:57.588+0000] {manager.py:465} INFO - Exiting gracefully upon receiving signal 15
+[2024-08-19T15:20:22.783+0000] {manager.py:483} INFO - Processing files using up to 2 processes at a time 
+[2024-08-19T15:20:22.784+0000] {manager.py:484} INFO - Process each file at most once every 30 seconds
+[2024-08-19T15:20:22.784+0000] {manager.py:485} INFO - Checking for new files in /opt/airflow/dags every 300 seconds
+[2024-08-19T15:20:22.785+0000] {manager.py:821} INFO - Searching for files in /opt/airflow/dags
+[2024-08-19T15:20:22.788+0000] {manager.py:824} INFO - There are 1 files in /opt/airflow/dags
+[2024-08-19T15:20:22.965+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                    PID  Runtime      # DAGs    # Errors  Last Runtime    Last Run      Last # of DB Queries
+-------------------------  -----  ---------  --------  ----------  --------------  ----------  ----------------------
+/opt/airflow/dags/test.py     63  0.06s             0           0                                                   0
+================================================================================
+[2024-08-19T15:20:53.402+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                    PID  Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+-------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/test.py     71  0.01s             1           0  0.24s           2024-08-19T15:20:23                      12
+================================================================================
+[2024-08-19T15:21:24.008+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                    PID  Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+-------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/test.py     78  0.01s             1           0  0.25s           2024-08-19T15:20:53                      12
+================================================================================
+[2024-08-19T15:26:28.654+0000] {manager.py:483} INFO - Processing files using up to 2 processes at a time 
+[2024-08-19T15:26:28.658+0000] {manager.py:484} INFO - Process each file at most once every 30 seconds
+[2024-08-19T15:26:28.658+0000] {manager.py:485} INFO - Checking for new files in /opt/airflow/dags every 300 seconds
+[2024-08-19T15:26:28.659+0000] {manager.py:821} INFO - Searching for files in /opt/airflow/dags
+[2024-08-19T15:26:28.662+0000] {manager.py:824} INFO - There are 1 files in /opt/airflow/dags
+[2024-08-19T15:26:29.136+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                    PID  Runtime      # DAGs    # Errors  Last Runtime    Last Run      Last # of DB Queries
+-------------------------  -----  ---------  --------  ----------  --------------  ----------  ----------------------
+/opt/airflow/dags/test.py     76  0.08s             0           0                                                   0
+================================================================================
+[2024-08-20T04:35:12.608+0000] {manager.py:483} INFO - Processing files using up to 2 processes at a time 
+[2024-08-20T04:35:12.639+0000] {manager.py:484} INFO - Process each file at most once every 30 seconds
+[2024-08-20T04:35:12.639+0000] {manager.py:485} INFO - Checking for new files in /opt/airflow/dags every 300 seconds
+[2024-08-20T04:35:12.640+0000] {manager.py:821} INFO - Searching for files in /opt/airflow/dags
+[2024-08-20T04:35:12.652+0000] {manager.py:824} INFO - There are 1 files in /opt/airflow/dags
+[2024-08-20T04:35:12.864+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                    PID  Runtime      # DAGs    # Errors  Last Runtime    Last Run      Last # of DB Queries
+-------------------------  -----  ---------  --------  ----------  --------------  ----------  ----------------------
+/opt/airflow/dags/test.py     74  0.10s             0           0                                                   0
+================================================================================
+[2024-08-20T04:35:43.139+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                    PID  Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+-------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/test.py     81  0.01s             1           0  0.31s           2024-08-20T04:35:13                      11
+================================================================================
+[2024-08-20T06:21:14.598+0000] {manager.py:483} INFO - Processing files using up to 2 processes at a time 
+[2024-08-20T06:21:14.600+0000] {manager.py:484} INFO - Process each file at most once every 30 seconds
+[2024-08-20T06:21:14.601+0000] {manager.py:485} INFO - Checking for new files in /opt/airflow/dags every 300 seconds
+[2024-08-20T06:21:14.602+0000] {manager.py:821} INFO - Searching for files in /opt/airflow/dags
+[2024-08-20T06:21:14.610+0000] {manager.py:824} INFO - There are 1 files in /opt/airflow/dags
+[2024-08-20T06:21:14.891+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                    PID  Runtime      # DAGs    # Errors  Last Runtime    Last Run      Last # of DB Queries
+-------------------------  -----  ---------  --------  ----------  --------------  ----------  ----------------------
+/opt/airflow/dags/test.py     67  0.08s             0           0                                                   0
+================================================================================
+[2024-08-20T06:21:45.258+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                    PID  Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+-------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/test.py     75  0.02s             1           0  0.38s           2024-08-20T06:21:15                      12
+================================================================================
+[2024-08-20T06:22:15.828+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                    PID  Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+-------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/test.py     82  0.01s             1           0  0.25s           2024-08-20T06:21:45                      12
+================================================================================
+[2024-08-20T06:22:46.137+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                    PID  Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+-------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/test.py     89  0.01s             1           0  0.20s           2024-08-20T06:22:16                      12
+================================================================================
+[2024-08-20T06:23:16.605+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                    PID  Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+-------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/test.py     95  0.01s             1           0  0.20s           2024-08-20T06:22:46                      12
+================================================================================
+[2024-08-20T06:23:46.955+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                    PID  Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+-------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/test.py    102  0.01s             1           0  0.22s           2024-08-20T06:23:16                      12
+================================================================================
+[2024-08-20T06:24:17.492+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                    PID  Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+-------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/test.py    109  0.01s             1           0  0.29s           2024-08-20T06:23:47                      12
+================================================================================
+[2024-08-20T06:24:47.834+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                    PID  Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+-------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/test.py    117  0.02s             1           0  0.23s           2024-08-20T06:24:17                      12
+================================================================================
+[2024-08-20T06:25:18.303+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                    PID  Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+-------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/test.py    125  0.01s             1           0  0.21s           2024-08-20T06:24:48                      12
+================================================================================
+[2024-08-20T06:25:48.630+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                    PID  Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+-------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/test.py    132  0.01s             1           0  0.18s           2024-08-20T06:25:18                      12
+================================================================================
+[2024-08-20T06:26:14.992+0000] {manager.py:821} INFO - Searching for files in /opt/airflow/dags
+[2024-08-20T06:26:14.994+0000] {manager.py:824} INFO - There are 1 files in /opt/airflow/dags
+[2024-08-20T06:26:19.080+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                    PID  Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+-------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/test.py    139  0.01s             1           0  0.22s           2024-08-20T06:25:48                      12
+================================================================================
