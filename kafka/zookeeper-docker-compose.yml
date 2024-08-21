@@ -1,0 +1,73 @@
+version: '3.4'
+
+services:
+    
+  zoo1:
+    image: confluentinc/cp-zookeeper:7.3.2
+    hostname: zoo1
+    container_name: zoo1
+    ports:
+      - 2181:2181
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_SERVER_ID: 1
+      ZOOKEEPER_SERVERS: zoo1:2888:3888;zoo2:2888:3888;zoo3:2888:3888
+    volumes:
+      - zoo1:/data
+    deploy:
+      placement:
+        constraints:
+          - node.labels.kafka==1
+    networks:
+      - backend
+   
+  zoo2:
+    image: confluentinc/cp-zookeeper:7.3.2
+    hostname: zoo2
+    container_name: zoo2
+    ports:
+      - 2182:2182
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2182
+      ZOOKEEPER_SERVER_ID: 2
+      ZOOKEEPER_SERVERS: zoo1:2888:3888;zoo2:2888:3888;zoo3:2888:3888
+    volumes:
+      - zoo2:/data
+    deploy:
+      placement:
+        constraints:
+          - node.labels.kafka==2
+    networks:
+      - backend
+        
+  zoo3:
+    image: confluentinc/cp-zookeeper:7.3.2
+    hostname: zoo3
+    container_name: zoo3
+    ports:
+      - 2183:2183
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2183
+      ZOOKEEPER_SERVER_ID: 3
+      ZOOKEEPER_SERVERS: zoo1:2888:3888;zoo2:2888:3888;zoo3:2888:3888
+    volumes:
+      - zoo3:/data
+    deploy:
+      placement:
+        constraints:
+          - node.labels.kafka==3
+    networks:
+      - backend
+
+volumes:
+  zoo1:
+  zoo2:
+  zoo3:
+
+networks:
+  backend:
+    external:
+      name: ${NETWORK_BACKEND:-kafka}
+  monitor:
+    external:
+      name: ${NETWORK_MONITOR:-monitoring}
