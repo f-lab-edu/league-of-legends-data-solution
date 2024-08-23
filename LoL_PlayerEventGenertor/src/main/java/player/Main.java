@@ -15,8 +15,8 @@ public class Main {
 
     public static void main(String[] args) {
 
-        if (args.length > 0) {
-            System.out.println("플레이어의 수를 다시 입력 해 주세요.");
+        if (args.length < 2) {
+            System.out.println("사용법: java Main <플레이어 수> <bootstrap 서버:포트>");
             System.exit(0);
         }
 
