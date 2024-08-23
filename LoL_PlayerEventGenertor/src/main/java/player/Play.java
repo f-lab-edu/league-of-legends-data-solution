@@ -117,6 +117,7 @@ public class Play implements Runnable {
             "Stopping log generator (ipAddr=" + ipAddr + ", account=" + account + ", sessionID="
                 + sessionRoomID + ", champion=" + champion + ", durationSeconds="
                 + durationSeconds);
+
         this.latch.countDown();
     }
 

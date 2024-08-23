@@ -1,6 +1,7 @@
 package player;
 
 import java.time.OffsetDateTime;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
@@ -8,11 +9,13 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.IntStream;
+import org.apache.kafka.common.protocol.types.Field.Str;
 
 public class Room implements Runnable {
 
+    final Integer PLAYER_LIMIT = 10;
+
     static int userNum;
-    static int player = 10;
     private final String sessionRoomID;
     static OffsetDateTime createRoomDate;
 
@@ -21,14 +24,19 @@ public class Room implements Runnable {
     static Set<Integer> championSet = new HashSet<>();
     static Random rand = new Random();
 
-    public Room(String sessionRoomId, OffsetDateTime createRoomDate, int userNum) {
+    static CountDownLatch latch_main;
+
+    public Room(String sessionRoomId,
+        OffsetDateTime createRoomDate, int userNum,
+        CountDownLatch latch_main) {
         this.sessionRoomID = sessionRoomId;
         this.createRoomDate = createRoomDate;
         this.userNum = userNum;
+        this.latch_main = latch_main;
     }
 
-    CountDownLatch latch = new CountDownLatch(player);
-    ExecutorService executor = Executors.newFixedThreadPool(player);
+    CountDownLatch latch = new CountDownLatch(PLAYER_LIMIT);
+    ExecutorService executor = Executors.newFixedThreadPool(PLAYER_LIMIT);
 
     @Override
     public void run() {
@@ -38,7 +46,7 @@ public class Room implements Runnable {
             "방을 생성되었습니다. sessionRoomID=" + sessionRoomID + ", createRoomDate=" + createRoomDate
                 + ", durationSeconds=" + durationSeconds);
 
-        IntStream.range(0, player).forEach(j -> {
+        IntStream.range(0, PLAYER_LIMIT).forEach(j -> {
             String ipAddr = getIpAddr();
             String account = getAccount();
             String champion = getChampions();
@@ -50,12 +58,13 @@ public class Room implements Runnable {
             championSet.clear();
         });
 
-        executor.shutdown();
-
         try {
             latch.await();
         } catch (InterruptedException e) {
             System.err.println(e);
+        } finally {
+            executor.shutdown();
+            this.latch_main.countDown();
         }
     }
 
@@ -68,47 +77,14 @@ public class Room implements Runnable {
      */
     private static String getChampions() {
         while (true) {
-            int championStatus = rand.nextInt(15);
-            String championName = "";
-            if (!championSet.contains(championStatus)) {
-                championSet.add(championStatus);
+            int championStatus = rand.nextInt(Champions.values().length);
 
-                if (championStatus == 0) {
-                    championName = "azir";
-                } else if (championStatus == 1) {
-                    championName = "viktor";
-                } else if (championStatus == 2) {
-                    championName = "orianna";
-                } else if (championStatus == 3) {
-                    championName = "vex";
-                } else if (championStatus == 4) {
-                    championName = "ryze";
-                } else if (championStatus == 5) {
-                    championName = "ari";
-                } else if (championStatus == 6) {
-                    championName = "syndra";
-                } else if (championStatus == 7) {
-                    championName = "taliyah";
-                } else if (championStatus == 8) {
-                    championName = "xerath";
-                } else if (championStatus == 9) {
-                    championName = "malzahar";
-                } else if (championStatus == 10) {
-                    championName = "anivia";
-                } else if (championStatus == 11) {
-                    championName = "sylas";
-                } else if (championStatus == 12) {
-                    championName = "aurelion sol";
-                } else if (championStatus == 13) {
-                    championName = "rux";
-                } else if (championStatus == 14) {
-                    championName = "vladimir";
-                } else if (championStatus == 15) {
-                    championName = "neeko";
-                } else {
-                    championName = "zilean";
+            for (Champions champion : Champions.values()) {
+                if (champion.getValue() == championStatus && !championSet.contains(
+                    championStatus)) {
+                    championSet.add(championStatus);
+                    return champion.getName();
                 }
-                return championName;
             }
         }
     }

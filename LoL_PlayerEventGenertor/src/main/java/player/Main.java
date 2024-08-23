@@ -8,33 +8,41 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.IntStream;
 
+
 public class Main {
 
-    /**
-     * 로그를 생성하는 플레이어의 수를 저장합니다.
-     */
-    static int userNum = 10;
-    /**
-     * 생성되는 Room의 수를 저장합니다.
-     */
-    static int roomNum = userNum / 10;
+    static final Integer PLAYER_LIMIT = 10;
 
     public static void main(String[] args) {
+        if (args.length != 1) {
+            System.out.println("플레이어의 수를 다시 입력 해 주세요.");
+            System.exit(0);
+        }
+
+        int userNum = Integer.parseInt(args[0]);
+
+        if (userNum % PLAYER_LIMIT != 0) { // 5 % 10 =
+            System.out.println("플레이어의 수를 다시 입력 해 주세요.");
+            System.exit(0);
+        }
+
+        int roomNum = userNum / PLAYER_LIMIT;
+
         CountDownLatch latch = new CountDownLatch(roomNum);
         ExecutorService executor = Executors.newFixedThreadPool(roomNum);
 
         IntStream.range(0, roomNum).forEach(j -> {
             String sessionRoomID = getSessionRoomID();
             OffsetDateTime createRoomDate = OffsetDateTime.now(ZoneId.of("UTC"));
-            executor.execute(new Room(sessionRoomID, createRoomDate, userNum));
+            executor.execute(new Room(sessionRoomID, createRoomDate, userNum, latch));
         });
-
-        executor.shutdown();
 
         try {
             latch.await();
         } catch (InterruptedException e) {
             System.err.println(e);
+        } finally {
+            executor.shutdown();
         }
     }
 
