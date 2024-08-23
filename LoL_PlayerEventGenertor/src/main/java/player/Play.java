@@ -16,6 +16,8 @@ import java.util.concurrent.CountDownLatch;
 
 public class Play implements Runnable {
 
+    private final String boootstrap_Server;
+
     private String sessionRoomID;
     static OffsetDateTime createRoomDate;
 
@@ -32,7 +34,8 @@ public class Play implements Runnable {
 
 
     public Play(CountDownLatch latch, String sessionRoomID, OffsetDateTime createRoomDate,
-        String ipAddr, String account, String champion, int durationSeconds) {
+        String ipAddr, String account, String champion, int durationSeconds,
+        String bootstrap_Server) {
         this.latch = latch;
         this.sessionRoomID = sessionRoomID;
         this.createRoomDate = createRoomDate;
@@ -41,6 +44,7 @@ public class Play implements Runnable {
         this.champion = champion;
         this.durationSeconds = durationSeconds;
         this.rand = new Random();
+        this.boootstrap_Server = bootstrap_Server;
     }
 
     @Override
@@ -50,9 +54,9 @@ public class Play implements Runnable {
                 + ", sessionRoomID=" + sessionRoomID + ", durationSeconds=" + durationSeconds);
 
         Properties props = new Properties();
-        props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG,
-            "spark@kafka-cluster-01:9092,spark@kafka-cluster-02:9092,spark@kafka-cluster-03:9092");
-        props.put(ProducerConfig.CLIENT_ID_CONFIG, "SoloGameDataGenerator");
+
+        props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, boootstrap_Server);
+        props.put(ProducerConfig.CLIENT_ID_CONFIG, "League_Of_Legend");
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
 

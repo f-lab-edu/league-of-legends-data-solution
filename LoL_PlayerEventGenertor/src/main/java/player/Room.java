@@ -17,6 +17,7 @@ public class Room implements Runnable {
 
     static int userNum;
     private final String sessionRoomID;
+    private final String bootstrap_Server;
     static OffsetDateTime createRoomDate;
 
     static Set<String> ipSet = new HashSet<>();
@@ -28,11 +29,12 @@ public class Room implements Runnable {
 
     public Room(String sessionRoomId,
         OffsetDateTime createRoomDate, int userNum,
-        CountDownLatch latch_main) {
+        CountDownLatch latch_main, String bootstrap_Server) {
         this.sessionRoomID = sessionRoomId;
         this.createRoomDate = createRoomDate;
         this.userNum = userNum;
         this.latch_main = latch_main;
+        this.bootstrap_Server = bootstrap_Server;
     }
 
     CountDownLatch latch = new CountDownLatch(PLAYER_LIMIT);
@@ -53,7 +55,7 @@ public class Room implements Runnable {
 
             executor.execute(
                 new Play(latch, sessionRoomID, createRoomDate, ipAddr, account, champion,
-                    durationSeconds));
+                    durationSeconds, bootstrap_Server));
 
             championSet.clear();
         });

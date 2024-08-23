@@ -14,12 +14,14 @@ public class Main {
     static final Integer PLAYER_LIMIT = 10;
 
     public static void main(String[] args) {
-        if (args.length != 1) {
+
+        if (args.length > 0) {
             System.out.println("플레이어의 수를 다시 입력 해 주세요.");
             System.exit(0);
         }
 
         int userNum = Integer.parseInt(args[0]);
+        String bootstrap_Server = args[1];
 
         if (userNum % PLAYER_LIMIT != 0) { // 5 % 10 =
             System.out.println("플레이어의 수를 다시 입력 해 주세요.");
@@ -34,7 +36,8 @@ public class Main {
         IntStream.range(0, roomNum).forEach(j -> {
             String sessionRoomID = getSessionRoomID();
             OffsetDateTime createRoomDate = OffsetDateTime.now(ZoneId.of("UTC"));
-            executor.execute(new Room(sessionRoomID, createRoomDate, userNum, latch));
+            executor.execute(
+                new Room(sessionRoomID, createRoomDate, userNum, latch, bootstrap_Server));
         });
 
         try {
