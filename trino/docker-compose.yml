@@ -1,0 +1,67 @@
+version: '3'
+
+services:
+  trino-coordinator:
+    image: lewuathe/trino-coordinator:354
+    container_name: "trino-coordinator"
+    hostname: trino-coordinator
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./coordinator/etc/catalog:/usr/local/trino/etc/catalog
+    command: http://trino-coordinator:8080 trino-coordinator
+    deploy:
+      mode: replicated
+      replicas: 1
+      update_config:
+        parallelism: 1
+        delay: 10s
+      placement:
+        constraints:
+          - node.labels.trino==0
+      resources:
+        reservations:
+          cpus: '0.5'
+          memory: '2G'
+        limits:
+          cpus: '1'
+          memory: '3G'
+    networks:
+      - trino-net
+
+
+  trino-worker-01:
+    image: lewuathe/trino-worker:354
+    container_name: "trino-worker-01"
+    hostname: trino-worker-01
+    ports:
+      - "8081:8081"
+    volumes:
+      - ./coordinator/etc/catalog:/usr/local/trino/etc/catalog
+    command: http://trino-coordinator:8080 trino-worker-01
+    deploy:
+      mode: replicated
+      replicas: 1
+      update_config:
+        parallelism: 1
+        delay: 10s
+      placement:
+        constraints:
+          - node.labels.trino==1
+      resources:
+        reservations:
+          cpus: '0.5'
+          memory: '2G'
+        limits:
+          cpus: '1'
+          memory: '3G'
+    networks:
+      - trino-net
+volumes:
+  trino-data:
+
+networks:
+  trino-net:
+    driver: overlay
+    attachable: true  
+
