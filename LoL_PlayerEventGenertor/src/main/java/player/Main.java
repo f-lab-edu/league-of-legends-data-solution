@@ -1,7 +1,9 @@
 package player;
 
+import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -12,16 +14,18 @@ import java.util.stream.IntStream;
 public class Main {
 
     static final Integer PLAYER_LIMIT = 10;
+    static final String IDENTIFIER = getToday();
 
     public static void main(String[] args) {
 
-        if (args.length < 2) {
-            System.out.println("사용법: java Main <플레이어 수> <bootstrap 서버:포트>");
+        if (args.length < 3) {
+            System.out.println("사용법: java Main <플레이어 수> <bootstrap 서버:포트> 저장경로:/");
             System.exit(0);
         }
 
         int userNum = Integer.parseInt(args[0]);
         String bootstrap_Server = args[1];
+        String directory = args[2];
 
         if (userNum % PLAYER_LIMIT != 0) { // 5 % 10 =
             System.out.println("플레이어의 수를 다시 입력 해 주세요.");
@@ -37,7 +41,8 @@ public class Main {
             String sessionRoomID = getSessionRoomID();
             OffsetDateTime createRoomDate = OffsetDateTime.now(ZoneId.of("UTC"));
             executor.execute(
-                new Room(sessionRoomID, createRoomDate, userNum, latch, bootstrap_Server));
+                new Room(sessionRoomID, createRoomDate, userNum, latch, bootstrap_Server,
+                    directory, IDENTIFIER));
         });
 
         try {
@@ -61,5 +66,18 @@ public class Main {
         String sessionRoomID = String.valueOf(UUID.randomUUID());
 
         return sessionRoomID;
+    }
+
+    /**
+     * Main을 실행 할 시 UTC 기준의 현재 시간을 출력하는 메서드입니다.
+     *
+     * @return yyyyMMdd의 포맷형식을 가진 String형 formatedNow를 반환합니다.
+     */
+    private static String getToday() {
+        LocalDate now = LocalDate.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+        String formatedNow = now.format(formatter);
+
+        return formatedNow;
     }
 }

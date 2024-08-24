@@ -1,5 +1,10 @@
 package player;
 
+import java.io.FileWriter;
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.Date;
+import java.util.UUID;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
@@ -17,6 +22,8 @@ import java.util.concurrent.CountDownLatch;
 public class Play implements Runnable {
 
     private final String boootstrap_Server;
+    private final String directory;
+    private final String IDENTIFIER;
 
     private String sessionRoomID;
     static OffsetDateTime createRoomDate;
@@ -35,7 +42,7 @@ public class Play implements Runnable {
 
     public Play(CountDownLatch latch, String sessionRoomID, OffsetDateTime createRoomDate,
         String ipAddr, String account, String champion, int durationSeconds,
-        String bootstrap_Server) {
+        String bootstrap_Server, String directory, String IDENTIFIER) {
         this.latch = latch;
         this.sessionRoomID = sessionRoomID;
         this.createRoomDate = createRoomDate;
@@ -45,7 +52,10 @@ public class Play implements Runnable {
         this.durationSeconds = durationSeconds;
         this.rand = new Random();
         this.boootstrap_Server = bootstrap_Server;
+        this.directory = directory;
+        this.IDENTIFIER = IDENTIFIER;
     }
+
 
     @Override
     public void run() {
@@ -170,8 +180,19 @@ public class Play implements Runnable {
             JSONObject jsonObject = (JSONObject) jsonParser.parse(log);
             String jsonLog = String.valueOf(jsonObject);
             //producer.send(new ProducerRecord<>(TOPIC_NAME, jsonLog));
+
+            FileWriter fileWriter = new FileWriter(
+                directory + "/Riot-" + IDENTIFIER + ".json", true);
+
+            fileWriter.write(jsonLog);
+
+            fileWriter.flush();
+            fileWriter.close();
+
             System.out.println(jsonLog);
         } catch (ParseException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
