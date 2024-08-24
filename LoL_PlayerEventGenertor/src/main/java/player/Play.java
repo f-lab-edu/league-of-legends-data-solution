@@ -59,7 +59,6 @@ public class Play implements Runnable {
         props.put(ProducerConfig.CLIENT_ID_CONFIG, "League_Of_Legend");
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
-        System.out.println(boootstrap_Server);
         KafkaProducer<String, String> producer = new KafkaProducer<>(props);
 
         long startTime = System.currentTimeMillis();

@@ -1,7 +1,6 @@
 package player;
 
 import java.time.OffsetDateTime;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
@@ -9,7 +8,6 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.IntStream;
-import org.apache.kafka.common.protocol.types.Field.Str;
 
 public class Room implements Runnable {
 
