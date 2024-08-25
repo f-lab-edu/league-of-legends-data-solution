@@ -18,14 +18,13 @@ public class Main {
 
     public static void main(String[] args) {
 
-        if (args.length < 3) {
-            System.out.println("사용법: java Main <플레이어 수> <bootstrap 서버:포트> 저장경로:/");
+        if (args.length < 2) {
+            System.out.println("사용법: java Main <플레이어 수> <bootstrap 서버:포트>");
             System.exit(0);
         }
 
         int userNum = Integer.parseInt(args[0]);
         String bootstrap_Server = args[1];
-        String directory = args[2];
 
         if (userNum % PLAYER_LIMIT != 0) { // 5 % 10 =
             System.out.println("플레이어의 수를 다시 입력 해 주세요.");
@@ -42,7 +41,7 @@ public class Main {
             OffsetDateTime createRoomDate = OffsetDateTime.now(ZoneId.of("UTC"));
             executor.execute(
                 new Room(sessionRoomID, createRoomDate, userNum, latch, bootstrap_Server,
-                    directory, IDENTIFIER));
+                    IDENTIFIER));
         });
 
         try {

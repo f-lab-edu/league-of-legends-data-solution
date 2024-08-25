@@ -18,7 +18,6 @@ public class Room implements Runnable {
     static int userNum;
     private final String sessionRoomID;
     private final String bootstrap_Server;
-    private final String directory;
     static OffsetDateTime createRoomDate;
 
     static Set<String> ipSet = new HashSet<>();
@@ -30,13 +29,12 @@ public class Room implements Runnable {
 
     public Room(String sessionRoomId,
         OffsetDateTime createRoomDate, int userNum,
-        CountDownLatch latch_main, String bootstrap_Server, String directory, String IDENTIFIER) {
+        CountDownLatch latch_main, String bootstrap_Server, String IDENTIFIER) {
         this.sessionRoomID = sessionRoomId;
         this.createRoomDate = createRoomDate;
         this.userNum = userNum;
         this.latch_main = latch_main;
         this.bootstrap_Server = bootstrap_Server;
-        this.directory = directory;
         this.IDENTIFIER = IDENTIFIER;
     }
 
@@ -58,7 +56,7 @@ public class Room implements Runnable {
 
             executor.execute(
                 new Play(latch, sessionRoomID, createRoomDate, ipAddr, account, champion,
-                    durationSeconds, bootstrap_Server, directory, IDENTIFIER));
+                    durationSeconds, bootstrap_Server, IDENTIFIER));
 
             championSet.clear();
         });
