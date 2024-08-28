@@ -8,10 +8,12 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.IntStream;
+import org.apache.kafka.common.protocol.types.Field.Str;
 
 public class Room implements Runnable {
 
     final Integer PLAYER_LIMIT = 10;
+    private final String IDENTIFIER;
 
     static int userNum;
     private final String sessionRoomID;
@@ -27,12 +29,13 @@ public class Room implements Runnable {
 
     public Room(String sessionRoomId,
         OffsetDateTime createRoomDate, int userNum,
-        CountDownLatch latch_main, String bootstrap_Server) {
+        CountDownLatch latch_main, String bootstrap_Server, String IDENTIFIER) {
         this.sessionRoomID = sessionRoomId;
         this.createRoomDate = createRoomDate;
         this.userNum = userNum;
         this.latch_main = latch_main;
         this.bootstrap_Server = bootstrap_Server;
+        this.IDENTIFIER = IDENTIFIER;
     }
 
     CountDownLatch latch = new CountDownLatch(PLAYER_LIMIT);
@@ -53,7 +56,7 @@ public class Room implements Runnable {
 
             executor.execute(
                 new Play(latch, sessionRoomID, createRoomDate, ipAddr, account, champion,
-                    durationSeconds, bootstrap_Server));
+                    durationSeconds, bootstrap_Server, IDENTIFIER));
 
             championSet.clear();
         });

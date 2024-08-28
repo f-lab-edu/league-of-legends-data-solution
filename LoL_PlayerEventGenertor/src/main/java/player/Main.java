@@ -1,7 +1,9 @@
 package player;
 
+import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -12,6 +14,7 @@ import java.util.stream.IntStream;
 public class Main {
 
     static final Integer PLAYER_LIMIT = 10;
+    static final String IDENTIFIER = getToday();
 
     public static void main(String[] args) {
 
@@ -37,7 +40,8 @@ public class Main {
             String sessionRoomID = getSessionRoomID();
             OffsetDateTime createRoomDate = OffsetDateTime.now(ZoneId.of("UTC"));
             executor.execute(
-                new Room(sessionRoomID, createRoomDate, userNum, latch, bootstrap_Server));
+                new Room(sessionRoomID, createRoomDate, userNum, latch, bootstrap_Server,
+                    IDENTIFIER));
         });
 
         try {
@@ -61,5 +65,18 @@ public class Main {
         String sessionRoomID = String.valueOf(UUID.randomUUID());
 
         return sessionRoomID;
+    }
+
+    /**
+     * Main을 실행 할 시 UTC 기준의 현재 시간을 출력하는 메서드입니다.
+     *
+     * @return yyyyMMdd의 포맷형식을 가진 String형 formatedNow를 반환합니다.
+     */
+    private static String getToday() {
+        LocalDate now = LocalDate.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+        String formatedNow = now.format(formatter);
+
+        return formatedNow;
     }
 }
