@@ -1,5 +1,10 @@
 package player;
 
+import java.io.FileWriter;
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.Date;
+import java.util.UUID;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
@@ -13,10 +18,15 @@ import java.time.ZoneId;
 import java.util.Properties;
 import java.util.Random;
 import java.util.concurrent.CountDownLatch;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Play implements Runnable {
 
+    private static final Logger logger = LoggerFactory.getLogger(Play.class);
+
     private final String boootstrap_Server;
+    private final String IDENTIFIER;
 
     private String sessionRoomID;
     static OffsetDateTime createRoomDate;
@@ -29,13 +39,13 @@ public class Play implements Runnable {
 
     private final long MINIMUM_SLEEP_TIME = 50;
     private final long MAXIMUM_SLEEP_TIME = 60 * 300;
-    private final String TOPIC_NAME = "gamelogs";
+    private final String TOPIC_NAME = "lol";
     private CountDownLatch latch;
 
 
     public Play(CountDownLatch latch, String sessionRoomID, OffsetDateTime createRoomDate,
         String ipAddr, String account, String champion, int durationSeconds,
-        String bootstrap_Server) {
+        String bootstrap_Server, String IDENTIFIER) {
         this.latch = latch;
         this.sessionRoomID = sessionRoomID;
         this.createRoomDate = createRoomDate;
@@ -45,7 +55,9 @@ public class Play implements Runnable {
         this.durationSeconds = durationSeconds;
         this.rand = new Random();
         this.boootstrap_Server = bootstrap_Server;
+        this.IDENTIFIER = IDENTIFIER;
     }
+
 
     @Override
     public void run() {
@@ -97,8 +109,7 @@ public class Play implements Runnable {
                     producer);
             } else if (method.equals("/wait")) {
                 printPlayerLog(sessionRoomID, createRoomDate, ipAddr, account, champion, method,
-                    offsetDateTime, 0, 0, "0", status, deathCount, finalTime,
-                    producer);
+                    offsetDateTime, 0, 0, "0", status, deathCount, finalTime, producer);
             } else if (rand.nextDouble() > 0.97 && itemCount < 6) {
                 itemCount += 1;
                 printPlayerLog(sessionRoomID, createRoomDate, ipAddr, account, champion, "/buyItem",
@@ -139,8 +150,8 @@ public class Play implements Runnable {
      * @param key            플레이어가 입력한 키
      * @param status         플레이어의 상태
      * @param deathCount     플레이어의 죽은 횟수
-     * @param finalTime      // Room이 진행 된 현재 시간
-     * @param producer
+     * @param finalTime      Room이 진행 된 현재 시간
+     * @param producer       Kafka Producer
      */
     private void printPlayerLog(String sessionRoomID, OffsetDateTime createRoomDate, String ipAddr,
         String account, String champion, String method, OffsetDateTime offsetDateTime,
@@ -169,7 +180,14 @@ public class Play implements Runnable {
         try {
             JSONObject jsonObject = (JSONObject) jsonParser.parse(log);
             String jsonLog = String.valueOf(jsonObject);
-            //producer.send(new ProducerRecord<>(TOPIC_NAME, jsonLog));
+
+            /**
+             * 테스트 시 producer는 주석처리 해야 오류가 발생하지 않습니다.
+             */
+            producer.send(new ProducerRecord<>(TOPIC_NAME, jsonLog));
+
+            logger.info(jsonLog);
+
             System.out.println(jsonLog);
         } catch (ParseException e) {
             throw new RuntimeException(e);
