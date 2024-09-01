@@ -1,10 +1,9 @@
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import col, from_json
-from pyspark.sql.types import StructType, StructField, StringType, TimestampType
+from pyspark.sql.types import StructType, StructField, StringType, TimestampType,DateType
 from pyspark.sql.functions import sha2
 import os
 import sys
-from datetime import datetime
 
 os.environ['PYSPARK_PYTHON'] = sys.executable
 os.environ['PYSPARK_DRIVER_PYTHON'] = sys.executable
@@ -28,7 +27,7 @@ kafkaStream = spark \
   .load()
 
 schema = StructType([
-  StructField("createRoomDate", TimestampType(), True),
+  StructField("createRoomDate", DateType(), True),
   StructField("method", StringType(), True),
   StructField("ingametime", StringType(), True),
   StructField("ip", StringType(), True),
@@ -87,8 +86,9 @@ playerLogsStreamWriter = transformedPlayerLogs.writeStream \
   .trigger(processingTime='1 minute') \
   .outputMode("append") \
   .format("json") \
-  .option("path", "s3://sjm-simple-data/bronzelayer/" + str(datetime.today().strftime("%Y-%m-%d"))) \
-  .option("checkpointLocation","s3://sjm-simple-data/checkpoint/" + str(datetime.today().strftime("%Y-%m-%d"))) \
+  .option("path", "s3://sjm-simple-data/bronze_riot/playerlogs/") \
+  .option("checkpointLocation","s3://sjm-simple-data/checkpoint/bronze_riot/playerlogs/") \
+  .partitionBy("create_room_date") \
   .queryName("query_playerLogs") \
   .start()
 
