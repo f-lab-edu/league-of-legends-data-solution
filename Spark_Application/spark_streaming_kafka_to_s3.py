@@ -1,9 +1,11 @@
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import col, from_json
-from pyspark.sql.types import StructType, StructField, StringType, TimestampType,DateType
+from pyspark.sql.types import StructType, StructField, StringType, TimestampType, DateType
 from pyspark.sql.functions import sha2
 import os
 import sys
+
+# spark-submit --master yarn --deploy-mode cluster --conf spark.kafka.bootstrap.servers="airflow-mysql-01:29092" --conf spark.kafka.topic="lol" --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.3.0,org.apache.spark:spark-streaming-kafka-0-10_2.12:3.3.0 ./spark_streaming_kafka_to_s3.py
 
 os.environ['PYSPARK_PYTHON'] = sys.executable
 os.environ['PYSPARK_DRIVER_PYTHON'] = sys.executable
@@ -49,9 +51,8 @@ jsonParsedStream = kafkaStream.selectExpr("CAST(value As STRING)") \
 jsonParsedStream = jsonParsedStream \
   .withColumn("create_room_date", col("createRoomDate")) \
   .withColumn("current_time", col("ingametime")) \
-  .withColumn("death_count", col("deathCount")) \
   .withColumn("room_id", col("roomID")) \
-  .withColumn("death_count", col("createRoomDate").cast("int")) \
+  .withColumn("death_count", col("deathCount").cast("int")) \
   .withColumn("x", col("x").cast("int")) \
   .withColumn("y", col("y").cast("int")) \
   .withColumn("status", col("status").cast("int")) \

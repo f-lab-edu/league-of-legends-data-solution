@@ -1,10 +1,5 @@
 package player;
 
-import java.io.FileWriter;
-import java.io.IOException;
-import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.UUID;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
@@ -92,10 +87,8 @@ public class Play implements Runnable {
             OffsetDateTime offsetDateTime = OffsetDateTime.now(ZoneId.of("UTC"));
 
             long endTime = System.currentTimeMillis();
-            long runTime_seconds = (endTime - startTime) / 1000;
-            long runTime_min = runTime_seconds / 60;
+            String runTime_seconds = String.valueOf((endTime - startTime) / 1000);
 
-            String finalTime = runTime_min + ":" + (runTime_seconds % 60);
             Integer x_direction = getMouseX();
             Integer y_direction = getMouseY();
             String key = getPlayerInputKey();
@@ -105,25 +98,25 @@ public class Play implements Runnable {
                 x_direction = getMouseX_Viktor();
                 y_direction = getMouseY_Viktor();
                 printPlayerLog(sessionRoomID, createRoomDate, ipAddr, account, champion, method,
-                    offsetDateTime, x_direction, y_direction, key, status, deathCount, finalTime,
+                    offsetDateTime, x_direction, y_direction, key, status, deathCount, runTime_seconds,
                     producer);
             } else if (method.equals("/wait")) {
                 printPlayerLog(sessionRoomID, createRoomDate, ipAddr, account, champion, method,
-                    offsetDateTime, 0, 0, "0", status, deathCount, finalTime, producer);
+                    offsetDateTime, 0, 0, "0", status, deathCount, runTime_seconds, producer);
             } else if (rand.nextDouble() > 0.97 && itemCount < 6) {
                 itemCount += 1;
                 printPlayerLog(sessionRoomID, createRoomDate, ipAddr, account, champion, "/buyItem",
-                    offsetDateTime, x_direction, y_direction, key, status, deathCount, finalTime,
+                    offsetDateTime, x_direction, y_direction, key, status, deathCount, runTime_seconds,
                     producer);
             } else if (status == 1) {
                 printPlayerLog(sessionRoomID, createRoomDate, ipAddr, account, champion, method,
-                    offsetDateTime, x_direction, y_direction, key, status, deathCount, finalTime,
+                    offsetDateTime, x_direction, y_direction, key, status, deathCount, runTime_seconds,
                     producer);
                 status = 0;
                 deathCount += 1;
             } else {
                 printPlayerLog(sessionRoomID, createRoomDate, ipAddr, account, champion, method,
-                    offsetDateTime, x_direction, y_direction, key, status, deathCount, finalTime,
+                    offsetDateTime, x_direction, y_direction, key, status, deathCount, runTime_seconds,
                     producer);
             }
         }
