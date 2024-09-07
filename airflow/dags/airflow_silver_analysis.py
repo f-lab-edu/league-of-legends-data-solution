@@ -175,7 +175,7 @@ with DAG(
     default_args=default_args,
     dagrun_timeout=timedelta(hours=1),
     start_date=datetime(2024, 9, 7),
-    schedule_interval=None,
+    schedule_interval="0 7 * * *",
 ) as dag:
     create_cluster = EmrCreateJobFlowOperator(
         task_id="create_emr_cluster",
