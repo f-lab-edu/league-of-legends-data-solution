@@ -7,8 +7,8 @@ services:
     hostname: kafka-worker-01
     container_name: kafka-worker-01
     ports:
-      - 9092:9092
-      - 29092:29092
+      - "9092:9092"
+      - "29092:29092"
     environment:
       KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka-worker-01:19092,EXTERNAL://${DOCKER_HOST_IP:-127.0.0.1}:9092
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT
@@ -40,14 +40,14 @@ services:
       - kafka-worker-01:/kafka
     networks:
       - backend
-        
-  kafka-worker-02:                                         
+
+  kafka-worker-02:
     image: confluentinc/cp-kafka:7.3.2
     hostname: kafka-worker-02
     container_name: kafka-worker-02
     ports:
-      - 9093:9093
-      - 29093:29093                                                                                                           
+      - "9093:9093"
+      - "29093:29093"
     environment:
       KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka-worker-02:19093,EXTERNAL://${DOCKER_HOST_IP:-127.0.0.1}:9093
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT
@@ -81,13 +81,13 @@ services:
       - backend
 
 
-  kafka-worker-03:                                                                                                                    
+  kafka-worker-03:
     image: confluentinc/cp-kafka:7.3.2
     hostname: kafka-worker-03
     container_name: kafka-worker-03
     ports:
-      - 9094:9094
-      - 29094:29094                                                                                                                
+      - "9094:9094"
+      - "29094:29094"
     environment:
       KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka-worker-03:19094,EXTERNAL://${DOCKER_HOST_IP:-127.0.0.1}:9094
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT
@@ -130,10 +130,19 @@ services:
         constraints:
           - node.role == manager
     ports:
-      - 9001:9000
+      - "9001:9000"
     networks:
       - backend
 
+  kafka-exporter:
+    image: danielqsj/kafka-exporter
+    hostname: kafka-exporter
+    ports:
+      - "9308:9308"
+    command: [ "--kafka.server=kafka-worker-01:19092", "--kafka.server=kafka-worker-02:19093", "--kafka.server=kafka-worker-03:19094" ]
+    restart: always
+    networks:
+      - backend
 volumes:
   kafka-worker-01-log:
   kafka-worker-02-log:
