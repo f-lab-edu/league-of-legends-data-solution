@@ -16,16 +16,21 @@ spark = (
     .getOrCreate()
 )
 
-bronze_playlogs_json = spark.read.json("s3://sjm-simple-data/bronze_riot/playerlogs/*")
+filter_time = sys.argv[1]
 
+bronze_playerlogs_json = spark.sql(
+    f"""
+    SELECT * FROM bronze_riot.playerlogs WHERE create_room_date='{filter_time}'
+"""
+)
 
 chamion_indexer = StringIndexer(
     inputCols=["champion", "room_id", "inputkey"],
     outputCols=["cahmpion_indexed", "room_indexed", "inputkey_indexed"],
 )
 
-chamion_indexer_model = chamion_indexer.fit(bronze_playlogs_json)
-final_data_with_transform = chamion_indexer_model.transform(bronze_playlogs_json)
+chamion_indexer_model = chamion_indexer.fit(bronze_playerlogs_json)
+final_data_with_transform = chamion_indexer_model.transform(bronze_playerlogs_json)
 
 label_add_playlogs = final_data_with_transform.withColumn(
     "label", when(col("champion") == "VIKTOR", 1).otherwise(0)
@@ -42,7 +47,9 @@ train_data = label_add_playlogs.withColumn("x+y", col("x") + col("y")).select(
     "create_room_date",
 )
 
-train_data.write.format("parquet").mode("append").partitionBy("create_room_date").save(
+spark.conf.set("spark.sql.sources.partitionOverwriteMode", "dynamic")
+
+train_data.write.format("parquet").mode("overwrite").partitionBy("create_room_date").save(
     "s3://sjm-simple-data/silver_train_riot/playerlogs"
 )
 
