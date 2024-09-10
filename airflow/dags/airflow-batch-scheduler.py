@@ -15,7 +15,7 @@ from airflow.utils.task_group import TaskGroup
 default_args = {
     "owner": "airflow",
     "depends_on_past": False,
-    "email": ["thdwpals8975@naver.com"],
+    "email": ["test1234@naver.com"],
     "email_on_failure": True,
     "email_on_retry": True,
     "retries": 3,
@@ -37,10 +37,10 @@ default_args = {
 
 JOB_FLOW_OVERRIDES = {
     "Name": "Airflow-Batch-Scheduling",
-    "LogUri": "s3://aws-logs-172984108503-ap-northeast-2/elasticmapreduce",
+    "LogUri": "aws.log.uri",
     "ReleaseLabel": "emr-6.8.0",
-    "ServiceRole": "arn:aws:iam::172984108503:role/test",
-    "JobFlowRole": "EMR_EC2_DefaultRole",
+    "ServiceRole": "aws.service.role",
+    "JobFlowRole": "aws.service.role",
     "Applications": [{"Name": "Hadoop"}, {"Name": "Spark"}],
     "ManagedScalingPolicy": {
         "ComputeLimits": {
@@ -53,9 +53,9 @@ JOB_FLOW_OVERRIDES = {
     },
     "Instances": {
         "Ec2KeyName": "emr-pem",
-        "Ec2SubnetId": "subnet-0369baa26a9585c67",
-        "EmrManagedMasterSecurityGroup": "sg-0add401863d9ba4ec",
-        "EmrManagedSlaveSecurityGroup": "sg-05d4edc7a41e7b357",
+        "Ec2SubnetId": "aws.subnet.id",
+        "EmrManagedMasterSecurityGroup": "",
+        "EmrManagedSlaveSecurityGroup": "",
         "ServiceAccessSecurityGroup": "",
         "AdditionalMasterSecurityGroups": [""],
         "AdditionalSlaveSecurityGroups": [""],
