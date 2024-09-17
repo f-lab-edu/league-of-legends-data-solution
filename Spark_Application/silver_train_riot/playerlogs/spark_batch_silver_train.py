@@ -9,19 +9,30 @@ os.environ["PYSPARK_PYTHON"] = sys.executable
 os.environ["PYSPARK_DRIVER_PYTHON"] = sys.executable
 
 spark = (
-    SparkSession.builder.appName("League Of Legend Player Batch Silver Layer")
+    SparkSession.builder.appName("LoL-SparkBatch-Delta-Silver-Train")
     .master("yarn")
     .config("spark.home", "/usr/lib/spark")
+    .config(
+        "spark.jars",
+        "/usr/share/aws/delta/lib/delta-core.jar,/usr/share/aws/delta/lib/delta-storage.jar,/usr/share/aws/delta/lib/delta-storage-s3-dynamodb.jar",
+    )
+    .config("spark.sql.extensions", "io.delta.sql.DeltaSparkSessionExtension")
+    .config(
+        "spark.sql.catalog.spark_catalog",
+        "org.apache.spark.sql.delta.catalog.DeltaCatalog",
+    )
+    .config("spark.sql.lineage.enabled", "true")
     .enableHiveSupport()
     .getOrCreate()
 )
+
 
 filter_time = sys.argv[1]
 
 bronze_playerlogs_json = spark.sql(
     f"""
     SELECT * FROM bronze_riot.playerlogs WHERE create_room_date='{filter_time}'
-"""
+    """
 )
 
 chamion_indexer = StringIndexer(
@@ -47,10 +58,9 @@ train_data = label_add_playlogs.withColumn("x+y", col("x") + col("y")).select(
     "create_room_date",
 )
 
-spark.conf.set("spark.sql.sources.partitionOverwriteMode", "dynamic")
 
-train_data.write.format("parquet").mode("overwrite").partitionBy("create_room_date").save(
-    "s3://sjm-simple-data/silver_train_riot/playerlogs"
-)
+train_data.write.format("delta").mode("overwrite").partitionBy(
+    "create_room_date"
+).save("s3://sjm-simple-data/silver_train_riot/playerlogs")
 
 spark.stop()
