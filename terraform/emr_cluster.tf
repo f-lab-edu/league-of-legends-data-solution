@@ -4,8 +4,8 @@ provider "aws" {
 
 resource "aws_emr_cluster" "cluster" {
   name          = aws_cluster.name
-  release_label = "emr-6.8.0"
-  applications = ["Spark", "Hadoop", "JupyterHub", "Trino", "Zeppelin"]
+  release_label = "emr-6.13.0"
+  applications = ["Spark", "Hadoop", "JupyterHub", "Zeppelin"]
   log_uri       = aws_s3.bucket
 
   service_role = aws_iam_role.iam_emr_service_role.arn
@@ -23,27 +23,42 @@ resource "aws_emr_cluster" "cluster" {
   }
 
   master_instance_group {
-    instance_type  = "c5.xlarge"
+    instance_type  = "r5.xlarge"
     instance_count = 1
     ebs_config {
       size                 = "32"
-      type                 = "gp2"
+      type                 = "gp3"
       volumes_per_instance = 2
     }
   }
 
   core_instance_group {
-    instance_type  = "c5.xlarge"
+    instance_type  = "r5.xlarge"
     instance_count = 1
     ebs_config {
       size                 = "32"
-      type                 = "gp2"
+      type                 = "gp3"
       volumes_per_instance = 2
     }
   }
 
   configurations_json = <<EOF
   [
+     {
+      "Classification": "delta-defaults",
+      "Properties": {
+        "delta.enabled": "true"
+      }
+    },
+     {
+      "Classification": "spark",
+      "Properties": {
+        "spark.dynamicAllocation.enabled": "true",
+        "spark.dynamicAllocation.minExecutors": "1",
+        "spark.dynamicAllocation.maxExecutors": "10",
+        "spark.dynamicAllocation.executorIdleTimeout": "60"
+      }
+    },
     {
       "Classification" : "hive-site",
       "Properties" : {
@@ -63,6 +78,17 @@ EOF
 
   scale_down_behavior  = "TERMINATE_AT_TASK_COMPLETION"
   ebs_root_volume_size = "30"
+}
+
+resource "aws_emr_managed_scaling_policy" "auto_scale_policy" {
+  cluster_id = aws_emr_cluster.cluster.id
+  compute_limits {
+    maximum_capacity_units          = 5
+    minimum_capacity_units          = 2
+    maximum_ondemand_capacity_units = 5
+    maximum_core_capacity_units     = 5
+    unit_type                       = "Instances"
+  }
 }
 
 data "aws_instance" "primary" {
