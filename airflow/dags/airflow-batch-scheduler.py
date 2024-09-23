@@ -38,14 +38,14 @@ default_args = {
 JOB_FLOW_OVERRIDES = {
     "Name": "Airflow-Batch-Scheduling",
     "LogUri": "aws.log.uri",
-    "ReleaseLabel": "emr-6.8.0",
+    "ReleaseLabel": "emr-6.13.0",
     "ServiceRole": "aws.service.role",
     "JobFlowRole": "aws.service.role",
     "Applications": [{"Name": "Hadoop"}, {"Name": "Spark"}],
     "ManagedScalingPolicy": {
         "ComputeLimits": {
             "UnitType": "Instances",
-            "MinimumCapacityUnits": 1,
+            "MinimumCapacityUnits": 2,
             "MaximumCapacityUnits": 5,
             "MaximumOnDemandCapacityUnits": 5,
             "MaximumCoreCapacityUnits": 5,
@@ -63,7 +63,7 @@ JOB_FLOW_OVERRIDES = {
             {
                 "Name": "",
                 "InstanceRole": "MASTER",
-                "InstanceType": "m5.xlarge",
+                "InstanceType": "r5.xlarge",
                 "InstanceCount": 1,
                 "EbsConfiguration": {
                     "EbsBlockDeviceConfigs": [
@@ -80,7 +80,7 @@ JOB_FLOW_OVERRIDES = {
             {
                 "Name": "",
                 "InstanceRole": "CORE",
-                "InstanceType": "m5.xlarge",
+                "InstanceType": "r5.xlarge",
                 "InstanceCount": 1,
                 "EbsConfiguration": {
                     "EbsBlockDeviceConfigs": [
@@ -100,6 +100,12 @@ JOB_FLOW_OVERRIDES = {
     },
     "Configurations": [
         {
+            "Classification": "delta-defaults",
+            "Properties": {
+                "delta.enabled": "true"
+            },
+        },
+        {
             "Classification": "hive-site",
             "Properties": {
                 "hive.metastore.client.factory.class": "com.amazonaws.glue.catalog.metastore.AWSGlueDataCatalogHiveClientFactory"
@@ -110,6 +116,45 @@ JOB_FLOW_OVERRIDES = {
             "Properties": {
                 "hive.metastore.client.factory.class": "com.amazonaws.glue.catalog.metastore.AWSGlueDataCatalogHiveClientFactory"
             },
+        },
+        {
+            "Classification": "yarn-site",
+            "Properties": {
+                "yarn.nodemanager.vmem-check-enabled": "false",
+                "yarn.nodemanager.pmem-check-enabled": "false",
+                "yarn.scheduler.maximum-allocation-mb": "32000",
+                "yarn.nodemanager.resource.memory-mb": "32000"
+            }
+        },
+        {
+            "Classification": "spark",
+            "Properties": {
+                "maximizeResourceAllocation": "false"
+            }
+        },
+        {
+                 "Classification": "spark-defaults",
+                 "Properties": {
+                   "spark.network.timeout": "800s",
+                   "spark.executor.heartbeatInterval": "60s",
+                   "spark.dynamicAllocation.enabled": "false",
+                   "spark.driver.memory": "28G",
+                   "spark.executor.memory": "28G",
+                   "spark.executor.cores": "3",
+                   "spark.executor.instances": "1",
+                   "spark.executor.memoryOverhead": "3G",
+                   "spark.driver.memoryOverhead": "3G",
+                   "spark.memory.fraction": "0.80",
+                   "spark.memory.storageFraction": "0.30",
+                   "spark.executor.extraJavaOptions": "-XX:+UseG1GC -XX:+UnlockDiagnosticVMOptions -XX:+G1SummarizeConcMark -XX:InitiatingHeapOccupancyPercent=35 -verbose:gc -XX:+PrintGCDetails -XX:+PrintGCDateStamps -XX:OnOutOfMemoryError='kill -9 %p'",
+                   "spark.driver.extraJavaOptions": "-XX:+UseG1GC -XX:+UnlockDiagnosticVMOptions -XX:+G1SummarizeConcMark -XX:InitiatingHeapOccupancyPercent=35 -verbose:gc -XX:+PrintGCDetails -XX:+PrintGCDateStamps -XX:OnOutOfMemoryError='kill -9 %p'",
+                   "spark.yarn.scheduler.reporterThread.maxFailures": "5",
+                   "spark.storage.level": "MEMORY_AND_DISK_SER",
+                   "spark.rdd.compress": "true",
+                   "spark.shuffle.compress": "true",
+                   "spark.shuffle.spill.compress": "true",
+                   "spark.default.parallelism": "6"
+                 }
         },
     ],
     "EbsRootVolumeSize": 30,
