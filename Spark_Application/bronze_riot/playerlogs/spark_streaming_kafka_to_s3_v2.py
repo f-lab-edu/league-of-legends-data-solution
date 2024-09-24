@@ -86,27 +86,33 @@ jsonParsedStream = (
 
 통과한 데이터는 validStream, 통과하지 않는 데이터는 invalidStream
 """
-validStream = jsonParsedStream.filter(
-    (col("createRoomDate").isNotNull())
-    & (col("ingametime").cast(IntegerType()).isNotNull())
-    & (col("deathCount").cast(IntegerType()).isNotNull())
-    & (col("deathCount").cast(IntegerType()) >= 0)
-    & (col("x").cast(IntegerType()).isNotNull())
-    & (col("y").cast(IntegerType()).isNotNull())
-    & (col("status").cast(IntegerType()).isNotNull())
-    & (col("status").cast(IntegerType()) >= 0)
+createroomdate_cond = col("createRoomDate").isNotNull()
+ingametime_cond = col("ingametime").cast(IntegerType()).isNotNull()
+deathcount_cond = col("deathCount").cast(IntegerType()).isNotNull() & (col("deathCount").cast(IntegerType()) >=0 )
+x_cond = col("x").cast(IntegerType()).isNotNull()
+y_cond = col("y").cast(IntegerType()).isNotNull()
+status_cond = col("status").cast(IntegerType()).isNotNull() & (col("status").cast(IntegerType()) >= 0)
+
+valid_conditions = (
+  createroomdate_cond
+  & ingametime_cond
+  & deathcount_cond
+  & x_cond
+  & y_cond
+  & status_cond
 )
 
-invalidStream = jsonParsedStream.filter(
-    (col("createRoomDate").isNull())
-    | (col("ingametime").cast(IntegerType()).isNull())
-    | (col("deathCount").cast(IntegerType()).isNull())
-    | (col("deathCount").cast(IntegerType()) <= 0)
-    | (col("x").cast(IntegerType()).isNull())
-    | (col("y").cast(IntegerType()).isNull())
-    | (col("status").cast(IntegerType()).isNull())
-    | (col("status").cast(IntegerType()) <= 0)
+invalid_conditions = (
+  ~createroomdate_cond
+  | ~ingametime_cond
+  | ~deathcount_cond
+  | ~x_cond
+  | ~y_cond
+  | ~status_cond
 )
+
+validStream = jsonParsedStream.filter(valid_conditions)
+invalidStream = jsonParsedStream.filter(invalid_conditions)
 
 transformedPlayerLogs = (
     validStream.select(
@@ -146,8 +152,8 @@ invalidStreamWriter = (
     invalidStream.writeStream.trigger(processingTime="1 minute")
     .outputMode("append")
     .format("json")
-    .option("path", "s3://sjm-simple-data/invalid_data/")
-    .option("checkpointLocation", "s3://sjm-simple-data/checkpoint/invalid_data/")
+    .option("path", "s3://sjm-simple-data/bronze_riot/invalid_data/")
+    .option("checkpointLocation", "s3://sjm-simple-data/checkpoint/bronze_riot/invalid_data/")
     .queryName("query_invalidData")
     .start()
 )
