@@ -8,9 +8,8 @@ from airflow.providers.amazon.aws.operators.emr import (
     EmrAddStepsOperator,
     EmrTerminateJobFlowOperator,
 )
-from airflow.providers.amazon.aws.sensors.emr import EmrStepSensor
 from airflow.utils.task_group import TaskGroup
-
+from astronomer.providers.amazon.aws.sensors.emr import EmrStepSensorAsync
 
 default_args = {
     "owner": "airflow",
@@ -184,7 +183,7 @@ def generate_silver_riot_analysis(logical_date):
                     "cluster",
                     "--master",
                     "yarn",
-                    "s3://sjm-simple-data/app/silver_analysis_riot/playerlogs/spark_batch_silver_analysis.py",
+                    "s3://sjm-simple-data/app/silver_analysis_riot/playerlogs/delta_spark_batch_silver_analysis.py",
                     date_str,
                 ],
             },
@@ -215,7 +214,7 @@ def generate_silver_riot_train(logical_date):
                     "cluster",
                     "--master",
                     "yarn",
-                    "s3://sjm-simple-data/app/silver_train_riot/playerlogs/spark_batch_silver_train.py",
+                    "s3://sjm-simple-data/app/silver_train_riot/playerlogs/delta_spark_batch_silver_train.py",
                     date_str,
                 ],
             },
@@ -246,7 +245,7 @@ def generate_gold_riot_analysis(logical_date):
                     "cluster",
                     "--master",
                     "yarn",
-                    "s3://sjm-simple-data/app/gold_riot/average_death_and_time/average_death_and_time.py",
+                    "s3://sjm-simple-data/app/gold_riot/average_death_and_time/delta_average_death_and_time.py",
                     date_str,
                 ],
             },
@@ -262,7 +261,7 @@ def generate_gold_riot_analysis(logical_date):
                     "cluster",
                     "--master",
                     "yarn",
-                    "s3://sjm-simple-data/app/gold_riot/champion_death_count/champion_death_count.py",
+                    "s3://sjm-simple-data/app/gold_riot/champion_death_count/delta_champion_death_count.py",
                     date_str,
                 ],
             },
@@ -278,7 +277,7 @@ def generate_gold_riot_analysis(logical_date):
                     "cluster",
                     "--master",
                     "yarn",
-                    "s3://sjm-simple-data/app/gold_riot/key_used_per/key_used_per.py",
+                    "s3://sjm-simple-data/app/gold_riot/key_used_per/delta_key_used_per.py",
                     date_str,
                 ],
             },
@@ -294,7 +293,7 @@ def generate_gold_riot_analysis(logical_date):
                     "cluster",
                     "--master",
                     "yarn",
-                    "s3://sjm-simple-data/app/gold_riot/room_end_time/room_end_time.py",
+                    "s3://sjm-simple-data/app/gold_riot/room_end_time/delta_room_end_time.py",
                     date_str,
                 ],
             },
@@ -374,7 +373,7 @@ with DAG(
             aws_conn_id="aws_default",
         )
 
-        step_sensor_1 = EmrStepSensor(
+        step_sensor_1 = EmrStepSensorAsync(
             task_id="step_sensor_1",
             job_flow_id='{{ task_instance.xcom_pull(task_ids="create_emr_cluster", key="return_value") }}',
             step_id='{{ task_instance.xcom_pull(task_ids="add_steps_1", key="return_value")[0] }}',
@@ -394,7 +393,7 @@ with DAG(
             aws_conn_id="aws_default",
         )
 
-        step_sensor_2 = EmrStepSensor(
+        step_sensor_2 = EmrStepSensorAsync(
             task_id="step_sensor_2",
             job_flow_id='{{ task_instance.xcom_pull(task_ids="create_emr_cluster", key="return_value") }}',
             step_id='{{ task_instance.xcom_pull(task_ids="add_steps_2", key="return_value")[0] }}',
@@ -416,7 +415,7 @@ with DAG(
 
         gold_group_step_sensors = []
         for index in range(4):
-            sensor = EmrStepSensor(
+            sensor = EmrStepSensorAsync(
                 task_id=f"step_sensor_3_{index + 1}",
                 job_flow_id='{{ task_instance.xcom_pull(task_ids="create_emr_cluster", key="return_value") }}',
                 step_id='{{ task_instance.xcom_pull(task_ids="add_steps_3", key="return_value")[%d] }}'
