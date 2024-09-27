@@ -25,7 +25,7 @@ base_path = "s3://sjm-simple-data/bronze_riot/playerlogs"
 
 backup_bronze_data = spark.read.json(f"{base_path}/create_room_date={partition_day}-*")
 
-backup_bronze_data.write.mode("overwrite").option("compression", "gzip").parquet(
+backup_bronze_data.write.mode("overwrite").option("compression", "zstd").parquet(
     f"s3://sjm-backup/{partition_day}"
 )
 

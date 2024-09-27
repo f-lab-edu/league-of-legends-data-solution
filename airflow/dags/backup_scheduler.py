@@ -219,21 +219,21 @@ with DAG(
     )
 
     with TaskGroup(group_id="backup_group", prefix_group_id=False) as backup_group:
-        add_steps_1 = EmrAddStepsOperator(
+        add_backup_steps_1 = EmrAddStepsOperator(
             task_id="add_steps_1",
             job_flow_id='{{ task_instance.xcom_pull(task_ids="create_emr_cluster", key="return_value") }}',
             steps='{{ task_instance.xcom_pull(task_ids="generate_backup_task", key="backup_steps") }}',
             aws_conn_id="aws_default",
         )
 
-        step_sensor_1 = EmrStepSensorAsync(
+        step_backup_sensor_1 = EmrStepSensorAsync(
             task_id="step_sensor_1",
             job_flow_id='{{ task_instance.xcom_pull(task_ids="create_emr_cluster", key="return_value") }}',
-            step_id='{{ task_instance.xcom_pull(task_ids="add_steps_1", key="return_value")[0] }}',
+            step_id='{{ task_instance.xcom_pull(task_ids="add_backup_steps_1", key="return_value")[0] }}',
             aws_conn_id="aws_default",
         )
 
-        add_steps_1 >> step_sensor_1
+        add_backup_steps_1 >> step_backup_sensor_1
 
     terminate_emr_cluster = EmrTerminateJobFlowOperator(
         task_id="terminate_emr_cluster",
