@@ -94,11 +94,12 @@ public class Play implements Runnable {
             String key = getPlayerInputKey();
             Integer status = getStatus();
 
-            if (champion.equals("viktor")) {
+            if (champion.equals("VIKTOR")) {
                 x_direction = getMouseX_Viktor();
                 y_direction = getMouseY_Viktor();
                 printPlayerLog(sessionRoomID, createRoomDate, ipAddr, account, champion, method,
-                    offsetDateTime, x_direction, y_direction, key, status, deathCount, runTime_seconds,
+                    offsetDateTime, x_direction, y_direction, key, status, deathCount,
+                    runTime_seconds,
                     producer);
             } else if (method.equals("/wait")) {
                 printPlayerLog(sessionRoomID, createRoomDate, ipAddr, account, champion, method,
@@ -106,17 +107,20 @@ public class Play implements Runnable {
             } else if (rand.nextDouble() > 0.97 && itemCount < 6) {
                 itemCount += 1;
                 printPlayerLog(sessionRoomID, createRoomDate, ipAddr, account, champion, "/buyItem",
-                    offsetDateTime, x_direction, y_direction, key, status, deathCount, runTime_seconds,
+                    offsetDateTime, x_direction, y_direction, key, status, deathCount,
+                    runTime_seconds,
                     producer);
             } else if (status == 1) {
                 printPlayerLog(sessionRoomID, createRoomDate, ipAddr, account, champion, method,
-                    offsetDateTime, x_direction, y_direction, key, status, deathCount, runTime_seconds,
+                    offsetDateTime, x_direction, y_direction, key, status, deathCount,
+                    runTime_seconds,
                     producer);
                 status = 0;
                 deathCount += 1;
             } else {
                 printPlayerLog(sessionRoomID, createRoomDate, ipAddr, account, champion, method,
-                    offsetDateTime, x_direction, y_direction, key, status, deathCount, runTime_seconds,
+                    offsetDateTime, x_direction, y_direction, key, status, deathCount,
+                    runTime_seconds,
                     producer);
             }
         }
