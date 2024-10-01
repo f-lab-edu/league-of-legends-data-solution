@@ -8,13 +8,23 @@ os.environ["PYSPARK_PYTHON"] = sys.executable
 os.environ["PYSPARK_DRIVER_PYTHON"] = sys.executable
 
 spark = (
-    SparkSession.builder.appName("League Of Legend Player Batch Silver Layer")
+    SparkSession.builder.appName("LoL-SparkBatch-Delta-Gold-key_used_per")
     .master("yarn")
     .config("spark.home", "/usr/lib/spark")
+    .config(
+        "spark.jars",
+        "/usr/share/aws/delta/lib/delta-core.jar,/usr/share/aws/delta/lib/delta-storage.jar,/usr/share/aws/delta/lib/delta-storage-s3-dynamodb.jar",
+    )
+    .config("spark.sql.extensions", "io.delta.sql.DeltaSparkSessionExtension")
+    .config(
+        "spark.sql.catalog.spark_catalog",
+        "org.apache.spark.sql.delta.catalog.DeltaCatalog",
+    )
+    .config("spark.sql.lineage.enabled", "true")
     .enableHiveSupport()
     .getOrCreate()
 )
-
+spark.conf.set("spark.sql.sources.partitionOverwriteMode", "dynamic")
 filter_time = sys.argv[1]
 
 
@@ -35,7 +45,7 @@ key_used_per = (
 
 spark.conf.set("spark.sql.sources.partitionOverwriteMode", "dynamic")
 
-key_used_per.write.format("parquet").mode("overwrite").partitionBy(
+key_used_per.write.format("delta").mode("overwrite").partitionBy(
     "create_room_date"
 ).save("s3://sjm-simple-data/gold_riot/key_used_per/")
 

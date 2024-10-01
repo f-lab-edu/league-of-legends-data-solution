@@ -8,20 +8,31 @@ os.environ["PYSPARK_PYTHON"] = sys.executable
 os.environ["PYSPARK_DRIVER_PYTHON"] = sys.executable
 
 spark = (
-    SparkSession.builder.appName("League Of Legend Player Batch Silver Layer")
+    SparkSession.builder.appName("LoL-SparkBatch-Delta-Silver-Analysis")
     .master("yarn")
     .config("spark.home", "/usr/lib/spark")
+    .config(
+        "spark.jars",
+        "/usr/share/aws/delta/lib/delta-core.jar,/usr/share/aws/delta/lib/delta-storage.jar,/usr/share/aws/delta/lib/delta-storage-s3-dynamodb.jar",
+    )
+    .config("spark.sql.extensions", "io.delta.sql.DeltaSparkSessionExtension")
+    .config(
+        "spark.sql.catalog.spark_catalog",
+        "org.apache.spark.sql.delta.catalog.DeltaCatalog",
+    )
+    .config("spark.sql.lineage.enabled", "true")
     .enableHiveSupport()
     .getOrCreate()
 )
 
+spark.conf.set("spark.sql.sources.partitionOverwriteMode", "dynamic")
+
 filter_time = sys.argv[1]
 
-bronze_playerlogs_json = spark.sql(
-    f"""
-    SELECT * FROM bronze_riot.playerlogs WHERE create_room_date='{filter_time}'
-"""
+bronze_playerlogs_json = spark.table("bronze_riot.playerlogs").filter(
+    col("create_room_date") == filter_time
 )
+
 
 transformed_playerlogs = bronze_playerlogs_json.withColumn(
     "datetime", col("datetime").cast(TimestampType())
@@ -35,15 +46,18 @@ filtered_playlogs_nullcheck = transformed_playerlogs.filter(
     | ~((col("datetime") == "") | col("datetime").isNull())
 )
 
+
 analysis_data = (
     filtered_playlogs_nullcheck.withColumn("x+y", col("x") + col("y"))
     .withColumn("buy", when(col("method") == "/buyItem", 1).otherwise(0))
     .orderBy("room_id", "current_time")
 )
 
-spark.conf.set("spark.sql.sources.partitionOverwriteMode", "dynamic")
 
-analysis_data.write.format("parquet").mode("overwrite").partitionBy(
+analysis_data.write.format("delta").mode("overwrite").partitionBy(
     "create_room_date"
-).save("s3://sjm-simple-data/silver_analysis_riot/playerlogs")
+).save("s3://sjm-simple-data/silver_analysis_riot/playerlogs/")
+
+
+print("Data processing complete")
 spark.stop()

@@ -101,7 +101,7 @@ public class Room implements Runnable {
      */
     private static String getIpAddr() {
         while (true) {
-            String ipAddr = "192.168.0." + rand.nextInt(256);
+            String ipAddr = "192.168."+  rand.nextInt(256)+ "." + rand.nextInt(256);
 
             if (!ipSet.contains(ipAddr)) {
                 ipSet.add(ipAddr);
