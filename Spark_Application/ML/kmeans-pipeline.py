@@ -28,12 +28,8 @@ spark = (
   .getOrCreate()
 )
 
-filter_time = sys.argv[1]
-
 # Silver Layer Train Data 가져오기
-train_data = spark.table("silver_train_riot.delta_playerlogs").filter(
-    col("create_room_date") == filter_time
-)
+train_data = spark.table("silver_train_riot.delta_playerlogs")
 
 # Feature Vector 만들기
 assembler = VectorAssembler(
@@ -53,6 +49,7 @@ evaluator = ClusteringEvaluator(
     featuresCol="features_vector", predictionCol="prediction",
     metricName="silhouette"
 )
+
 silhouette = evaluator.evaluate(train_data_prediction)
 
 print(f"Score: {silhouette}")
