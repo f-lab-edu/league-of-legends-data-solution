@@ -33,7 +33,7 @@ train_data = spark.table("silver_train_riot.delta_playerlogs")
 
 # Feature Vector 만들기
 assembler = VectorAssembler(
-    inputCols=["x", "y", "distance"], outputCol="features_vector"
+    inputCols=["x", "y"], outputCol="features_vector"
 )
 
 # KMeans 설정
@@ -54,4 +54,4 @@ silhouette = evaluator.evaluate(train_data_prediction)
 
 print(f"Score: {silhouette}")
 
-pipelineModel.write().overwrite().save("s3://sjm-simple-data/app/model_tmp/")
+pipelineModel.write().overwrite().save("s3://sjm-simple-data/app/model_001/")
