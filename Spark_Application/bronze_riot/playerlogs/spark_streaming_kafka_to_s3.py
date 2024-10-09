@@ -6,15 +6,22 @@ from pyspark.sql.types import (
     StringType,
     TimestampType,
     DateType,
+    IntegerType,
 )
 from pyspark.sql.functions import sha2
+from pyspark.ml import PipelineModel
 import os
 import sys
 
-# spark-submit --master yarn --deploy-mode cluster --conf spark.kafka.bootstrap.servers="airflow-mysql-01:29092" --conf spark.kafka.topic="lol" --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.3.0,org.apache.spark:spark-streaming-kafka-0-10_2.12:3.3.0 ./spark_streaming_kafka_to_s3.py
+# spark-submit --master yarn --deploy-mode cluster --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.3.0,org.apache.spark:spark-streaming-kafka-0-10_2.12:3.3.0 ./spark_streaming_kafka_to_s3.py
 
 os.environ["PYSPARK_PYTHON"] = sys.executable
 os.environ["PYSPARK_DRIVER_PYTHON"] = sys.executable
+
+
+"""
+Spark 세션 설정
+"""
 
 spark = (
     SparkSession.builder.appName("League Of Legend Player Streaming")
@@ -28,8 +35,8 @@ spark = (
     .getOrCreate()
 )
 
-kafka_bootstrap_server = spark.conf.get("spark.kafka.bootstrap.servers")
-kafka_topic = spark.conf.get("spark.kafka.topic")
+kafka_bootstrap_server = sys.argv[1]
+kafka_topic = sys.argv[2]
 
 kafkaStream = (
     spark.readStream.format("kafka")
@@ -38,23 +45,31 @@ kafkaStream = (
     .load()
 )
 
+"""
+스키마 정의
+원본 데이터 자체가 String 형이기 때문에 모든 필드를 String Type으로 정의
+"""
 schema = StructType(
     [
-        StructField("createRoomDate", DateType(), True),
-        StructField("method", StringType(), True),
-        StructField("ingametime", StringType(), True),
-        StructField("ip", StringType(), True),
-        StructField("deathCount", StringType(), True),
-        StructField("roomID", StringType(), True),
-        StructField("datetime", TimestampType(), True),
-        StructField("x", StringType(), True),
-        StructField("y", StringType(), True),
-        StructField("inputkey", StringType(), True),
-        StructField("account", StringType(), True),
-        StructField("champion", StringType(), True),
-        StructField("status", StringType(), True),
+        StructField("createRoomDate", StringType(), False),
+        StructField("method", StringType(), False),
+        StructField("ingametime", StringType(), False),
+        StructField("ip", StringType(), False),
+        StructField("deathCount", StringType(), False),
+        StructField("roomID", StringType(), False),
+        StructField("datetime", StringType(), False),
+        StructField("x", StringType(), False),
+        StructField("y", StringType(), False),
+        StructField("inputkey", StringType(), False),
+        StructField("account", StringType(), False),
+        StructField("champion", StringType(), False),
+        StructField("status", StringType(), False),
     ]
 )
+
+"""
+Json 파싱
+"""
 
 jsonParsedStream = (
     kafkaStream.selectExpr("CAST(value As STRING)")
@@ -62,68 +77,90 @@ jsonParsedStream = (
     .select("data.*")
 )
 
-jsonParsedStream = (
-    jsonParsedStream.withColumn("create_room_date", col("createRoomDate"))
-    .withColumn("current_time", col("ingametime"))
-    .withColumn("room_id", col("roomID"))
-    .withColumn("death_count", col("deathCount").cast("int"))
-    .withColumn("x", col("x").cast("int"))
-    .withColumn("y", col("y").cast("int"))
-    .withColumn("status", col("status").cast("int"))
-    .drop("createRoomDate")
-    .drop("ingametime")
-    .drop("deathCount")
-    .drop("roomID")
+
+"""
+적합성 및 유효성 검사
+
+해당 컬럼이 null값을 체크하고, 특정 컬럼은 음수를 가지지 않도록 함
+
+통과한 데이터는 validStream, 통과하지 않는 데이터는 invalidStream
+"""
+createroomdate_cond = col("createRoomDate").isNotNull()
+ingametime_cond = col("ingametime").cast(IntegerType()).isNotNull()
+deathcount_cond = col("deathCount").cast(IntegerType()).isNotNull() & (col("deathCount").cast(IntegerType()) >=0 )
+x_cond = col("x").cast(IntegerType()).isNotNull()
+y_cond = col("y").cast(IntegerType()).isNotNull()
+status_cond = col("status").cast(IntegerType()).isNotNull() & (col("status").cast(IntegerType()) >= 0)
+
+valid_conditions = (
+  createroomdate_cond
+  & ingametime_cond
+  & deathcount_cond
+  & x_cond
+  & y_cond
+  & status_cond
 )
 
-jsonParsedStream = (
-    jsonParsedStream.withColumn("encrypted_account", sha2(col("account"), 256))
+invalid_conditions = (
+  ~createroomdate_cond
+  | ~ingametime_cond
+  | ~deathcount_cond
+  | ~x_cond
+  | ~y_cond
+  | ~status_cond
+)
+
+validStream = jsonParsedStream.filter(valid_conditions)
+invalidStream = jsonParsedStream.filter(invalid_conditions)
+
+transformedPlayerLogs = (
+    validStream.select(
+        col("createRoomDate").cast(DateType()).alias("create_room_date"),
+        col("method"),
+        col("ingametime").cast(IntegerType()).alias("current_time"),
+        col("deathCount").cast(IntegerType()).alias("death_count"),
+        col("roomID").alias("room_id"),
+        col("datetime").cast(TimestampType()).alias("datetime"),
+        col("x").cast(IntegerType()),
+        col("y").cast(IntegerType()),
+        col("inputkey"),
+        col("account"),
+        col("champion"),
+        col("status").cast(IntegerType()),
+    )
+    .withColumn("encrypted_account", sha2(col("account"), 256))
     .drop("account")
     .drop("ip")
 )
 
-jsonParsedStream = jsonParsedStream.select(
-    "create_room_date",
-    "method",
-    "current_time",
-    "death_count",
-    "room_id",
-    "datetime",
-    "encrypted_account",
-    "x",
-    "y",
-    "inputkey",
-    "champion",
-    "status",
-)
+model = PipelineModel.load("s3://sjm-simple-data/app/model_tmp_1/")
+transformedPlayerLogs = model.transform(transformedPlayerLogs)
 
-transformedPlayerLogs = jsonParsedStream.toDF(
-    "create_room_date",
-    "method",
-    "current_time",
-    "death_count",
-    "room_id",
-    "datetime",
-    "encrypted_account",
-    "x",
-    "y",
-    "inputkey",
-    "champion",
-    "status",
-)
-
+transformedPlayerLogs = transformedPlayerLogs.drop("features_vector")
 
 playerLogsStreamWriter = (
     transformedPlayerLogs.writeStream.trigger(processingTime="1 minute")
     .outputMode("append")
-    .format("json")
+    .format("parquet")
     .option("path", "s3://sjm-simple-data/bronze_riot/playerlogs/")
     .option(
         "checkpointLocation", "s3://sjm-simple-data/checkpoint/bronze_riot/playerlogs/"
     )
     .partitionBy("create_room_date")
     .queryName("query_playerLogs")
-    .start()
+    .toTable("bronze_riot.playerlogs")
+)
+
+invalidStreamWriter = (
+    invalidStream.writeStream.trigger(processingTime="1 minute")
+    .outputMode("append")
+    .format("parquet")
+    .option("path", "s3://sjm-simple-data/bronze_riot/invalid_data/")
+    .option("checkpointLocation", "s3://sjm-simple-data/checkpoint/bronze_riot/invalid_data/")
+    .partitionBy("createRoomDate")
+    .queryName("query_invalidData")
+    .toTable("bronze_riot.invalid_data")
 )
 
 playerLogsStreamWriter.awaitTermination()
+invalidStreamWriter.awaitTermination()
