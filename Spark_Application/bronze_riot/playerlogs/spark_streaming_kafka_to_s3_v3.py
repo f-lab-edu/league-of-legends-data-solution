@@ -13,11 +13,10 @@ from pyspark.ml import PipelineModel
 import os
 import sys
 
-# spark-submit --master yarn --deploy-mode cluster --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.3.0,org.apache.spark:spark-streaming-kafka-0-10_2.12:3.3.0 ./spark_streaming_kafka_to_s3.py
+# spark-submit --master yarn --deploy-mode cluster --conf spark.kafka.bootstrap.servers="airflow-mysql-01:29092" --conf spark.kafka.topic="lol" --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.3.0,org.apache.spark:spark-streaming-kafka-0-10_2.12:3.3.0 ./spark_streaming_kafka_to_s3.py
 
 os.environ["PYSPARK_PYTHON"] = sys.executable
 os.environ["PYSPARK_DRIVER_PYTHON"] = sys.executable
-
 
 """
 Spark 세션 설정
@@ -133,33 +132,30 @@ transformedPlayerLogs = (
     .drop("ip")
 )
 
-model = PipelineModel.load("s3://sjm-simple-data/app/model_tmp_1/")
+model = PipelineModel.load("s3://sjm-simple-data/app/model_001/")
 transformedPlayerLogs = model.transform(transformedPlayerLogs)
-
-transformedPlayerLogs = transformedPlayerLogs.drop("features_vector")
 
 playerLogsStreamWriter = (
     transformedPlayerLogs.writeStream.trigger(processingTime="1 minute")
     .outputMode("append")
-    .format("parquet")
+    .format("json")
     .option("path", "s3://sjm-simple-data/bronze_riot/playerlogs/")
     .option(
         "checkpointLocation", "s3://sjm-simple-data/checkpoint/bronze_riot/playerlogs/"
     )
     .partitionBy("create_room_date")
     .queryName("query_playerLogs")
-    .toTable("bronze_riot.playerlogs")
+    .start()
 )
 
 invalidStreamWriter = (
     invalidStream.writeStream.trigger(processingTime="1 minute")
     .outputMode("append")
-    .format("parquet")
+    .format("json")
     .option("path", "s3://sjm-simple-data/bronze_riot/invalid_data/")
     .option("checkpointLocation", "s3://sjm-simple-data/checkpoint/bronze_riot/invalid_data/")
-    .partitionBy("createRoomDate")
     .queryName("query_invalidData")
-    .toTable("bronze_riot.invalid_data")
+    .start()
 )
 
 playerLogsStreamWriter.awaitTermination()

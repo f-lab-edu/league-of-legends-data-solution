@@ -20,7 +20,10 @@ spark = (
         "spark.sql.catalog.spark_catalog",
         "org.apache.spark.sql.delta.catalog.DeltaCatalog",
     )
-    .config("spark.sql.lineage.enabled", "true")
+    .config("spark.driver.memory", "2G")
+    .config("spark.executor.cores", "1")
+    .config("spark.executor.memory", "2G")
+    .config("spark.executor.instances", "1")
     .enableHiveSupport()
     .getOrCreate()
 )
@@ -29,11 +32,8 @@ spark.conf.set("spark.sql.sources.partitionOverwriteMode", "dynamic")
 
 filter_time = sys.argv[1]
 
-
-silver_playerlogs_df = spark.sql(
-    f"""
-    SELECT * FROM silver_analysis_riot.playerlogs WHERE create_room_date='{filter_time}'
-    """
+silver_playerlogs_df = spark.table("silver_analysis_riot.analysis_playerlogs").where(
+    f"create_room_date='{filter_time}'"
 )
 
 room_end_time = silver_playerlogs_df.groupBy("room_id", "create_room_date").agg(
@@ -44,10 +44,12 @@ room_champion_xy = silver_playerlogs_df.groupBy(
     "room_id", "encrypted_account", "champion", "create_room_date"
 ).agg(stddev(col("x")), stddev(col("y")))
 
-spark.conf.set("spark.sql.sources.partitionOverwriteMode", "dynamic")
+# room_end_time.write.format("delta").mode("overwrite").partitionBy(
+#    "create_room_date"
+# ).save("s3://sjm-simple-data/gold_riot/room_end_time/")
 
 room_end_time.write.format("delta").mode("overwrite").partitionBy(
     "create_room_date"
-).save("s3://sjm-simple-data/gold_riot/room_end_time/")
+).saveAsTable("gold_riot.room_end_time")
 
 spark.stop()
