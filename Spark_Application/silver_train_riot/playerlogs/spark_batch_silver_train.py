@@ -21,18 +21,21 @@ spark = (
         "spark.sql.catalog.spark_catalog",
         "org.apache.spark.sql.delta.catalog.DeltaCatalog",
     )
-    .config("spark.sql.lineage.enabled", "true")
+    .config("spark.driver.memory", "2G")
+    .config("spark.executor.cores", "1")
+    .config("spark.executor.memory", "4G")
+    .config("spark.executor.instances", "1")
+    .config("spark.sql.shuffle.partitions", "6")
     .enableHiveSupport()
     .getOrCreate()
 )
 
+spark.conf.set("spark.sql.sources.partitionOverwriteMode", "dynamic")
 
 filter_time = sys.argv[1]
 
-bronze_playerlogs_json = spark.sql(
-    f"""
-    SELECT * FROM bronze_riot.playerlogs WHERE create_room_date='{filter_time}'
-    """
+bronze_playerlogs_json = spark.table("bronze_riot.playerlogs").filter(
+    col("create_room_date") == filter_time
 )
 
 chamion_indexer = StringIndexer(
@@ -59,8 +62,12 @@ train_data = label_add_playlogs.withColumn("x+y", col("x") + col("y")).select(
 )
 
 
+# train_data.write.format("delta").mode("overwrite").partitionBy(
+#     "create_room_date"
+# ).save("s3://sjm-simple-data/silver_train_riot/train_playerlogs/")
+
 train_data.write.format("delta").mode("overwrite").partitionBy(
     "create_room_date"
-).save("s3://sjm-simple-data/silver_train_riot/playerlogs")
+).saveAsTable("silver_train_riot.train_playerlogs")
 
 spark.stop()
