@@ -446,6 +446,13 @@ with DAG(
         provide_context=True,
     )
 
+    monitor_emr_cluster = EmrJobFlowSensor(
+        task_id = "monitor_emr_cluster",
+        job_flow_id=create_cluster.output,
+        aws_conn_id="aws_default",
+        target_states="WAITING",
+    )
+
     """
         3단계 : 분석 데이터에 대한 Batch 작업을 하는 그룹입니다.
     """
@@ -519,8 +526,10 @@ with DAG(
         aws_conn_id="aws_default",
     )
 
-    create_cluster >> generate_silver_analysis_riot
-    create_cluster >> generate_silver_train_riot
+    create_cluster >> monitor_emr_cluster
+
+    monitor_emr_cluster >> generate_silver_analysis_riot
+    monitor_emr_cluster >> generate_silver_train_riot
 
     generate_silver_analysis_riot >> analysis_group
     generate_silver_train_riot >> train_group

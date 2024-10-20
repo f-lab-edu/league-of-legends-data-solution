@@ -207,6 +207,13 @@ with DAG(
         region_name="ap-northeast-2",
     )
 
+    monitor_emr_cluster = EmrJobFlowSensor(
+        task_id="monitor_emr_cluster",
+        job_flow_id=create_cluster.output,
+        aws_conn_id="aws_default",
+        target_states="WAITING",
+    )
+
     with TaskGroup(group_id="ml_group", prefix_group_id=False) as ml_group:
         ml_step = EmrAddStepsOperator(
             task_id="ml_step",
@@ -233,4 +240,4 @@ with DAG(
         aws_conn_id="aws_default",
     )
 
-create_cluster >> ml_group >> terminate_emr_cluster
+create_cluster >> monitor_emr_cluster >> ml_group >> terminate_emr_cluster
