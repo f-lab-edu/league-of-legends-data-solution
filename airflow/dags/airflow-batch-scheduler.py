@@ -8,9 +8,8 @@ from airflow.providers.amazon.aws.operators.emr import (
     EmrAddStepsOperator,
     EmrTerminateJobFlowOperator,
 )
-from airflow.providers.amazon.aws.sensors.emr import EmrStepSensor
 from airflow.utils.task_group import TaskGroup
-
+from astronomer.providers.amazon.aws.sensors.emr import EmrStepSensorAsync
 
 default_args = {
     "owner": "airflow",
@@ -63,7 +62,7 @@ JOB_FLOW_OVERRIDES = {
             {
                 "Name": "",
                 "InstanceRole": "MASTER",
-                "InstanceType": "r5.xlarge",
+                "InstanceType": "m5.xlarge",
                 "InstanceCount": 1,
                 "EbsConfiguration": {
                     "EbsBlockDeviceConfigs": [
@@ -80,7 +79,7 @@ JOB_FLOW_OVERRIDES = {
             {
                 "Name": "",
                 "InstanceRole": "CORE",
-                "InstanceType": "r5.xlarge",
+                "InstanceType": "m5.xlarge",
                 "InstanceCount": 1,
                 "EbsConfiguration": {
                     "EbsBlockDeviceConfigs": [
@@ -101,9 +100,7 @@ JOB_FLOW_OVERRIDES = {
     "Configurations": [
         {
             "Classification": "delta-defaults",
-            "Properties": {
-                "delta.enabled": "true"
-            },
+            "Properties": {"delta.enabled": "true"},
         },
         {
             "Classification": "hive-site",
@@ -122,39 +119,37 @@ JOB_FLOW_OVERRIDES = {
             "Properties": {
                 "yarn.nodemanager.vmem-check-enabled": "false",
                 "yarn.nodemanager.pmem-check-enabled": "false",
-                "yarn.scheduler.maximum-allocation-mb": "32000",
-                "yarn.nodemanager.resource.memory-mb": "32000"
-            }
+                "yarn.scheduler.maximum-allocation-mb": "16000",
+                "yarn.nodemanager.resource.memory-mb": "16000",
+            },
         },
         {
             "Classification": "spark",
-            "Properties": {
-                "maximizeResourceAllocation": "false"
-            }
+            "Properties": {"maximizeResourceAllocation": "false"},
         },
         {
-                 "Classification": "spark-defaults",
-                 "Properties": {
-                   "spark.network.timeout": "800s",
-                   "spark.executor.heartbeatInterval": "60s",
-                   "spark.dynamicAllocation.enabled": "false",
-                   "spark.driver.memory": "28G",
-                   "spark.executor.memory": "28G",
-                   "spark.executor.cores": "3",
-                   "spark.executor.instances": "1",
-                   "spark.executor.memoryOverhead": "3G",
-                   "spark.driver.memoryOverhead": "3G",
-                   "spark.memory.fraction": "0.80",
-                   "spark.memory.storageFraction": "0.30",
-                   "spark.executor.extraJavaOptions": "-XX:+UseG1GC -XX:+UnlockDiagnosticVMOptions -XX:+G1SummarizeConcMark -XX:InitiatingHeapOccupancyPercent=35 -verbose:gc -XX:+PrintGCDetails -XX:+PrintGCDateStamps -XX:OnOutOfMemoryError='kill -9 %p'",
-                   "spark.driver.extraJavaOptions": "-XX:+UseG1GC -XX:+UnlockDiagnosticVMOptions -XX:+G1SummarizeConcMark -XX:InitiatingHeapOccupancyPercent=35 -verbose:gc -XX:+PrintGCDetails -XX:+PrintGCDateStamps -XX:OnOutOfMemoryError='kill -9 %p'",
-                   "spark.yarn.scheduler.reporterThread.maxFailures": "5",
-                   "spark.storage.level": "MEMORY_AND_DISK_SER",
-                   "spark.rdd.compress": "true",
-                   "spark.shuffle.compress": "true",
-                   "spark.shuffle.spill.compress": "true",
-                   "spark.default.parallelism": "6"
-                 }
+            "Classification": "spark-defaults",
+            "Properties": {
+                "spark.network.timeout": "800s",
+                "spark.executor.heartbeatInterval": "60s",
+                "spark.dynamicAllocation.enabled": "false",
+                "spark.driver.memory": "4G",
+                "spark.executor.memory": "4G",
+                "spark.executor.cores": "2",
+                "spark.executor.instances": "1",
+                "spark.executor.memoryOverhead": "1G",
+                "spark.driver.memoryOverhead": "1G",
+                "spark.memory.fraction": "0.80",
+                "spark.memory.storageFraction": "0.30",
+                "spark.executor.extraJavaOptions": "-XX:+UseG1GC -XX:+UnlockDiagnosticVMOptions -XX:+G1SummarizeConcMark -XX:InitiatingHeapOccupancyPercent=35 -verbose:gc -XX:+PrintGCDetails -XX:+PrintGCDateStamps -XX:OnOutOfMemoryError='kill -9 %p'",
+                "spark.driver.extraJavaOptions": "-XX:+UseG1GC -XX:+UnlockDiagnosticVMOptions -XX:+G1SummarizeConcMark -XX:InitiatingHeapOccupancyPercent=35 -verbose:gc -XX:+PrintGCDetails -XX:+PrintGCDateStamps -XX:OnOutOfMemoryError='kill -9 %p'",
+                "spark.yarn.scheduler.reporterThread.maxFailures": "5",
+                "spark.storage.level": "MEMORY_AND_DISK_SER",
+                "spark.rdd.compress": "true",
+                "spark.shuffle.compress": "true",
+                "spark.shuffle.spill.compress": "true",
+                "spark.default.parallelism": "6",
+            },
         },
     ],
     "EbsRootVolumeSize": 30,
@@ -184,7 +179,23 @@ def generate_silver_riot_analysis(logical_date):
                     "cluster",
                     "--master",
                     "yarn",
-                    "s3://sjm-simple-data/app/silver_analysis_riot/playerlogs/spark_batch_silver_analysis.py",
+                    "--driver-memory",
+                    "2G",
+                    "--executor-cores",
+                    "1",
+                    "--executor-memory",
+                    "4G",
+                    "--num-executors",
+                    "1",
+                    "--conf",
+                    "spark.sql.shuffle.partitions=4",
+                    "--conf",
+                    "spark.dynamicAllocation.enabled=false",
+                    "--conf",
+                    "spark.executor.memoryOverhead=400MB",
+                    "--conf",
+                    "spark.driver.memoryOverhead=200MB",
+                    "s3://sjm-simple-data/app/silver_analysis_riot/playerlogs/delta_spark_batch_silver_analysis.py",
                     date_str,
                 ],
             },
@@ -215,7 +226,23 @@ def generate_silver_riot_train(logical_date):
                     "cluster",
                     "--master",
                     "yarn",
-                    "s3://sjm-simple-data/app/silver_train_riot/playerlogs/spark_batch_silver_train.py",
+                    "--driver-memory",
+                    "2G",
+                    "--executor-cores",
+                    "1",
+                    "--executor-memory",
+                    "4G",
+                    "--num-executors",
+                    "1",
+                    "--conf",
+                    "spark.sql.shuffle.partitions=6",
+                    "--conf",
+                    "spark.dynamicAllocation.enabled=false",
+                    "--conf",
+                    "spark.executor.memoryOverhead=400MB",
+                    "--conf",
+                    "spark.driver.memoryOverhead=200MB",
+                    "s3://sjm-simple-data/app/silver_train_riot/playerlogs/delta_spark_batch_silver_train_v2.py",
                     date_str,
                 ],
             },
@@ -246,7 +273,21 @@ def generate_gold_riot_analysis(logical_date):
                     "cluster",
                     "--master",
                     "yarn",
-                    "s3://sjm-simple-data/app/gold_riot/average_death_and_time/average_death_and_time.py",
+                    "--driver-memory",
+                    "2G",
+                    "--executor-cores",
+                    "1",
+                    "--executor-memory",
+                    "2G",
+                    "--num-executors",
+                    "1",
+                    "--conf",
+                    "spark.dynamicAllocation.enabled=false",
+                    "--conf",
+                    "spark.executor.memoryOverhead=200MB",
+                    "--conf",
+                    "spark.driver.memoryOverhead=200MB",
+                    "s3://sjm-simple-data/app/gold_riot/average_death_and_time/delta_average_death_and_time.py",
                     date_str,
                 ],
             },
@@ -262,7 +303,21 @@ def generate_gold_riot_analysis(logical_date):
                     "cluster",
                     "--master",
                     "yarn",
-                    "s3://sjm-simple-data/app/gold_riot/champion_death_count/champion_death_count.py",
+                    "--driver-memory",
+                    "2G",
+                    "--executor-cores",
+                    "1",
+                    "--executor-memory",
+                    "2G",
+                    "--num-executors",
+                    "1",
+                    "--conf",
+                    "spark.dynamicAllocation.enabled=false",
+                    "--conf",
+                    "spark.executor.memoryOverhead=200MB",
+                    "--conf",
+                    "spark.driver.memoryOverhead=200MB",
+                    "s3://sjm-simple-data/app/gold_riot/champion_death_count/delta_champion_death_count.py",
                     date_str,
                 ],
             },
@@ -278,7 +333,21 @@ def generate_gold_riot_analysis(logical_date):
                     "cluster",
                     "--master",
                     "yarn",
-                    "s3://sjm-simple-data/app/gold_riot/key_used_per/key_used_per.py",
+                    "--driver-memory",
+                    "2G",
+                    "--executor-cores",
+                    "1",
+                    "--executor-memory",
+                    "2G",
+                    "--num-executors",
+                    "1",
+                    "--conf",
+                    "spark.dynamicAllocation.enabled=false",
+                    "--conf",
+                    "spark.executor.memoryOverhead=200MB",
+                    "--conf",
+                    "spark.driver.memoryOverhead=200MB",
+                    "s3://sjm-simple-data/app/gold_riot/key_used_per/delta_key_used_per.py",
                     date_str,
                 ],
             },
@@ -294,7 +363,21 @@ def generate_gold_riot_analysis(logical_date):
                     "cluster",
                     "--master",
                     "yarn",
-                    "s3://sjm-simple-data/app/gold_riot/room_end_time/room_end_time.py",
+                    "--driver-memory",
+                    "2G",
+                    "--executor-cores",
+                    "1",
+                    "--executor-memory",
+                    "2G",
+                    "--num-executors",
+                    "1",
+                    "--conf",
+                    "spark.dynamicAllocation.enabled=false",
+                    "--conf",
+                    "spark.executor.memoryOverhead=200MB",
+                    "--conf",
+                    "spark.driver.memoryOverhead=200MB",
+                    "s3://sjm-simple-data/app/gold_riot/room_end_time/delta_room_end_time.py",
                     date_str,
                 ],
             },
@@ -329,8 +412,8 @@ with DAG(
     dag_id="airflow-batch-scheduling",
     default_args=default_args,
     dagrun_timeout=timedelta(hours=1),
-    start_date=datetime(2024, 9, 7),
-    schedule_interval=None,
+    start_date=datetime(2024, 10, 1),
+    schedule_interval="59 23 * * *",
 ) as dag:
     """
     1단계 : EMR을 생성합니다.
@@ -363,6 +446,13 @@ with DAG(
         provide_context=True,
     )
 
+    monitor_emr_cluster = EmrJobFlowSensor(
+        task_id = "monitor_emr_cluster",
+        job_flow_id=create_cluster.output,
+        aws_conn_id="aws_default",
+        target_states="WAITING",
+    )
+
     """
         3단계 : 분석 데이터에 대한 Batch 작업을 하는 그룹입니다.
     """
@@ -374,7 +464,7 @@ with DAG(
             aws_conn_id="aws_default",
         )
 
-        step_sensor_1 = EmrStepSensor(
+        step_sensor_1 = EmrStepSensorAsync(
             task_id="step_sensor_1",
             job_flow_id='{{ task_instance.xcom_pull(task_ids="create_emr_cluster", key="return_value") }}',
             step_id='{{ task_instance.xcom_pull(task_ids="add_steps_1", key="return_value")[0] }}',
@@ -394,7 +484,7 @@ with DAG(
             aws_conn_id="aws_default",
         )
 
-        step_sensor_2 = EmrStepSensor(
+        step_sensor_2 = EmrStepSensorAsync(
             task_id="step_sensor_2",
             job_flow_id='{{ task_instance.xcom_pull(task_ids="create_emr_cluster", key="return_value") }}',
             step_id='{{ task_instance.xcom_pull(task_ids="add_steps_2", key="return_value")[0] }}',
@@ -416,7 +506,7 @@ with DAG(
 
         gold_group_step_sensors = []
         for index in range(4):
-            sensor = EmrStepSensor(
+            sensor = EmrStepSensorAsync(
                 task_id=f"step_sensor_3_{index + 1}",
                 job_flow_id='{{ task_instance.xcom_pull(task_ids="create_emr_cluster", key="return_value") }}',
                 step_id='{{ task_instance.xcom_pull(task_ids="add_steps_3", key="return_value")[%d] }}'
@@ -436,14 +526,15 @@ with DAG(
         aws_conn_id="aws_default",
     )
 
-    create_cluster >> generate_silver_analysis_riot
-    create_cluster >> generate_silver_train_riot
+    create_cluster >> monitor_emr_cluster
+
+    monitor_emr_cluster >> generate_silver_analysis_riot
+    monitor_emr_cluster >> generate_silver_train_riot
 
     generate_silver_analysis_riot >> analysis_group
     generate_silver_train_riot >> train_group
 
     analysis_group >> generate_gold_riot
-    train_group >> generate_gold_riot
 
     generate_gold_riot >> gold_group
 
