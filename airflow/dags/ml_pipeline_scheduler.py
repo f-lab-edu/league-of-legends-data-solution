@@ -7,6 +7,7 @@ from airflow.providers.amazon.aws.operators.emr import (
     EmrTerminateJobFlowOperator,
 )
 from astronomer.providers.amazon.aws.sensors.emr import EmrStepSensorAsync
+from airflow.providers.amazon.aws.sensors.emr import EmrJobFlowSensor
 from airflow.utils.task_group import TaskGroup
 
 
