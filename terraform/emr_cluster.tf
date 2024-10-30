@@ -23,7 +23,7 @@ resource "aws_emr_cluster" "cluster" {
   }
 
   master_instance_group {
-    instance_type  = "r5.xlarge"
+    instance_type  = "c5.xlarge"
     instance_count = 1
     ebs_config {
       size                 = "32"
@@ -33,7 +33,7 @@ resource "aws_emr_cluster" "cluster" {
   }
 
   core_instance_group {
-    instance_type  = "r5.xlarge"
+    instance_type  = "c5.xlarge"
     instance_count = 1
     ebs_config {
       size                 = "32"
@@ -83,10 +83,10 @@ EOF
 resource "aws_emr_managed_scaling_policy" "auto_scale_policy" {
   cluster_id = aws_emr_cluster.cluster.id
   compute_limits {
-    maximum_capacity_units          = 5
-    minimum_capacity_units          = 2
-    maximum_ondemand_capacity_units = 5
-    maximum_core_capacity_units     = 5
+    maximum_capacity_units          = 2
+    minimum_capacity_units          = 1
+    maximum_ondemand_capacity_units = 2
+    maximum_core_capacity_units     = 2
     unit_type                       = "Instances"
   }
 }

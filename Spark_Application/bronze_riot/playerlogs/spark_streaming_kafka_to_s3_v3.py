@@ -9,6 +9,7 @@ from pyspark.sql.types import (
     IntegerType,
 )
 from pyspark.sql.functions import sha2
+from pyspark.ml import PipelineModel
 import os
 import sys
 
@@ -33,9 +34,6 @@ spark = (
     .getOrCreate()
 )
 
-"""
-Kafka 설정
-"""
 kafka_bootstrap_server = sys.argv[1]
 kafka_topic = sys.argv[2]
 
@@ -134,6 +132,8 @@ transformedPlayerLogs = (
     .drop("ip")
 )
 
+model = PipelineModel.load("s3://sjm-simple-data/app/model_001/")
+transformedPlayerLogs = model.transform(transformedPlayerLogs)
 
 playerLogsStreamWriter = (
     transformedPlayerLogs.writeStream.trigger(processingTime="1 minute")

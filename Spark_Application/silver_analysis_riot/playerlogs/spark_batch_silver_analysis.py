@@ -20,7 +20,11 @@ spark = (
         "spark.sql.catalog.spark_catalog",
         "org.apache.spark.sql.delta.catalog.DeltaCatalog",
     )
-    .config("spark.sql.lineage.enabled", "true")
+    .config("spark.driver.memory", "2G")
+    .config("spark.executor.cores", "1")
+    .config("spark.executor.memory", "4G")
+    .config("spark.executor.instances", "1")
+    .config("spark.sql.shuffle.partitions", "4")
     .enableHiveSupport()
     .getOrCreate()
 )
@@ -54,9 +58,13 @@ analysis_data = (
 )
 
 
+# analysis_data.write.format("delta").mode("overwrite").partitionBy(
+#     "create_room_date"
+# ).save("s3://sjm-simple-data/silver_analysis_riot/playerlogs/")
+
 analysis_data.write.format("delta").mode("overwrite").partitionBy(
     "create_room_date"
-).save("s3://sjm-simple-data/silver_analysis_riot/playerlogs/")
+).saveAsTable("silver_analysis_riot.analysis_playerlogs")
 
 
 print("Data processing complete")
