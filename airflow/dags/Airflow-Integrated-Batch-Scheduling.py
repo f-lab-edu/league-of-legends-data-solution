@@ -1,20 +1,20 @@
 from datetime import timedelta, datetime
 
-
 from airflow import DAG
-from airflow.operators.python import PythonOperator
+from airflow.operators.python import PythonOperator, BranchPythonOperator
 from airflow.providers.amazon.aws.operators.emr import (
     EmrCreateJobFlowOperator,
     EmrAddStepsOperator,
     EmrTerminateJobFlowOperator,
 )
-from airflow.utils.task_group import TaskGroup
+from airflow.providers.amazon.aws.sensors.emr import EmrJobFlowSensor
 from astronomer.providers.amazon.aws.sensors.emr import EmrStepSensorAsync
+from airflow.utils.task_group import TaskGroup
 
 default_args = {
     "owner": "airflow",
     "depends_on_past": False,
-    "email": ["test1234@naver.com"],
+    "email": ["thdwpals8975@naver.com"],
     "email_on_failure": True,
     "email_on_retry": True,
     "retries": 3,
@@ -34,27 +34,28 @@ default_args = {
     # 'trigger_rule': 'all_success'
 }
 
+
 JOB_FLOW_OVERRIDES = {
-    "Name": "Airflow-Batch-Scheduling",
-    "LogUri": "aws.log.uri",
+    "Name": "Airflow-Integrated-Batch-Scheduling",
+    "LogUri": "s3://aws-logs-172984108503-ap-northeast-2/elasticmapreduce",
     "ReleaseLabel": "emr-6.13.0",
-    "ServiceRole": "aws.service.role",
-    "JobFlowRole": "aws.service.role",
+    "ServiceRole": "arn:aws:iam::172984108503:role/test",
+    "JobFlowRole": "EMR_EC2_DefaultRole",
     "Applications": [{"Name": "Hadoop"}, {"Name": "Spark"}],
     "ManagedScalingPolicy": {
         "ComputeLimits": {
             "UnitType": "Instances",
-            "MinimumCapacityUnits": 2,
+            "MinimumCapacityUnits": 1,
             "MaximumCapacityUnits": 5,
-            "MaximumOnDemandCapacityUnits": 5,
-            "MaximumCoreCapacityUnits": 5,
+            "MaximumOnDemandCapacityUnits": 2,
+            "MaximumCoreCapacityUnits": 2,
         }
     },
     "Instances": {
         "Ec2KeyName": "emr-pem",
-        "Ec2SubnetId": "aws.subnet.id",
-        "EmrManagedMasterSecurityGroup": "",
-        "EmrManagedSlaveSecurityGroup": "",
+        "Ec2SubnetId": "subnet-0369baa26a9585c67",
+        "EmrManagedMasterSecurityGroup": "sg-0add401863d9ba4ec",
+        "EmrManagedSlaveSecurityGroup": "sg-05d4edc7a41e7b357",
         "ServiceAccessSecurityGroup": "",
         "AdditionalMasterSecurityGroups": [""],
         "AdditionalSlaveSecurityGroups": [""],
@@ -153,8 +154,8 @@ JOB_FLOW_OVERRIDES = {
         },
     ],
     "EbsRootVolumeSize": 30,
-    "Tags": [{"Key": "Name", "Value": "airflow_silver_analysis"}],
     "ScaleDownBehavior": "TERMINATE_AT_TASK_COMPLETION",
+    "StepConcurrencyLevel":4
 }
 
 
@@ -250,7 +251,6 @@ def generate_silver_riot_train(logical_date):
     ]
 
     return silver_train_riot_steps
-
 
 def generate_gold_riot_analysis(logical_date):
     """
@@ -396,6 +396,7 @@ def get_logical_date(**kwargs):
     logical_date = kwargs["logical_date"]
 
     ti = kwargs["ti"]
+
     ti.xcom_push(
         key="spark_silver_analysis_steps",
         value=generate_silver_riot_analysis(logical_date),
@@ -407,13 +408,21 @@ def get_logical_date(**kwargs):
         key="spark_gold_steps", value=generate_gold_riot_analysis(logical_date)
     )
 
+def decide_branch(**kwargs):
+    logical_date = kwargs['logical_date']
+    if logical_date.day == 1:
+        return "ml_group"
+    else :
+        return "terminate_emr_cluster"
 
 with DAG(
-    dag_id="airflow-batch-scheduling",
+    dag_id="Airflow-Integrated-Batch-Scheduling",
     default_args=default_args,
     dagrun_timeout=timedelta(hours=1),
     start_date=datetime(2024, 10, 1),
-    schedule_interval="59 23 * * *",
+    schedule_interval="0 0 * * *",
+    catchup=False,
+    max_active_tasks=4
 ) as dag:
     """
     1단계 : EMR을 생성합니다.
@@ -428,26 +437,20 @@ with DAG(
     """
         2단계 : logical_date를 기준으로 Spark 작업을 정의합니다.
     """
-    generate_silver_analysis_riot = PythonOperator(
-        task_id="generate_silver_analysis_riot",
+    get_logical_date_task = PythonOperator(
+        task_id="get_logical_date_task",
         python_callable=get_logical_date,
         provide_context=True,
     )
 
-    generate_silver_train_riot = PythonOperator(
-        task_id="generate_silver_train_riot",
-        python_callable=get_logical_date,
-        provide_context=True,
-    )
-
-    generate_gold_riot = PythonOperator(
-        task_id="generate_gold_riot",
-        python_callable=get_logical_date,
+    branch_task = BranchPythonOperator(
+        task_id = 'branch_task',
+        python_callable=decide_branch,
         provide_context=True,
     )
 
     monitor_emr_cluster = EmrJobFlowSensor(
-        task_id = "monitor_emr_cluster",
+        task_id="monitor_emr_cluster",
         job_flow_id=create_cluster.output,
         aws_conn_id="aws_default",
         target_states="WAITING",
@@ -460,7 +463,7 @@ with DAG(
         add_steps_1 = EmrAddStepsOperator(
             task_id="add_steps_1",
             job_flow_id='{{ task_instance.xcom_pull(task_ids="create_emr_cluster", key="return_value") }}',
-            steps='{{ task_instance.xcom_pull(task_ids="generate_silver_analysis_riot", key="spark_silver_analysis_steps") }}',
+            steps='{{ task_instance.xcom_pull(task_ids="get_logical_date_task", key="spark_silver_analysis_steps") }}',
             aws_conn_id="aws_default",
         )
 
@@ -480,7 +483,7 @@ with DAG(
         add_steps_2 = EmrAddStepsOperator(
             task_id="add_steps_2",
             job_flow_id='{{ task_instance.xcom_pull(task_ids="create_emr_cluster", key="return_value") }}',
-            steps='{{ task_instance.xcom_pull(task_ids="generate_silver_train_riot", key="spark_silver_train_steps") }}',
+            steps='{{ task_instance.xcom_pull(task_ids="get_logical_date_task", key="spark_silver_train_steps") }}',
             aws_conn_id="aws_default",
         )
 
@@ -500,11 +503,12 @@ with DAG(
         add_steps_3 = EmrAddStepsOperator(
             task_id="add_steps_3",
             job_flow_id='{{ task_instance.xcom_pull(task_ids="create_emr_cluster", key="return_value") }}',
-            steps='{{ task_instance.xcom_pull(task_ids="generate_gold_riot", key="spark_gold_steps") }}',
+            steps='{{ task_instance.xcom_pull(task_ids="get_logical_date_task", key="spark_gold_steps") }}',
             aws_conn_id="aws_default",
         )
 
         gold_group_step_sensors = []
+
         for index in range(4):
             sensor = EmrStepSensorAsync(
                 task_id=f"step_sensor_3_{index + 1}",
@@ -513,9 +517,59 @@ with DAG(
                 % index,
                 aws_conn_id="aws_default",
             )
+            gold_group_step_sensors.append(sensor)
 
-        for sensor in gold_group_step_sensors:
-            add_steps_3 >> sensor
+        add_steps_3 >> gold_group_step_sensors
+
+    with TaskGroup(group_id="ml_group", prefix_group_id=False) as ml_group :
+
+        ml_pipeline_steps = [
+            {
+                "Name": "spark_batch_ml_pipeline",
+                "ActionOnFailure": "CONTINUE",
+                "HadoopJarStep": {
+                    "Jar": "command-runner.jar",
+                    "Args": [
+                        "spark-submit",
+                        "--deploy-mode",
+                        "cluster",
+                        "--master",
+                        "yarn",
+                        "--driver-memory",
+                        "2G",
+                        "--executor-cores",
+                        "1",
+                        "--executor-memory",
+                        "2G",
+                        "--num-executors",
+                        "2",
+                        "--conf",
+                        "spark.dynamicAllocation.enabled=false",
+                        "--conf",
+                        "spark.executor.memoryOverhead=200MB",
+                        "--conf",
+                        "spark.driver.memoryOverhead=200MB",
+                        "s3://sjm-simple-data/app/ML/kmeans-pipeline.py",
+                    ],
+                },
+            }
+        ]
+
+        ml_steps = EmrAddStepsOperator(
+            task_id="ml_steps",
+            job_flow_id='{{ task_instance.xcom_pull(task_ids="create_emr_cluster", key="return_value") }}',
+            steps=ml_pipeline_steps,
+            aws_conn_id="aws_default",
+        )
+
+        ml_step_sensor = EmrStepSensorAsync(
+            task_id="ml_step_sensor",
+            job_flow_id='{{ task_instance.xcom_pull(task_ids="create_emr_cluster", key="return_value") }}',
+            step_id='{{ task_instance.xcom_pull(task_ids="ml_steps", key="return_value")[0] }}',
+            aws_conn_id="aws_default",
+        )
+
+        ml_steps >> ml_step_sensor
 
     """
         6단계 : EMR을 종료합니다
@@ -524,18 +578,18 @@ with DAG(
         task_id="terminate_emr_cluster",
         job_flow_id='{{ task_instance.xcom_pull(task_ids="create_emr_cluster", key="return_value") }}',
         aws_conn_id="aws_default",
+        trigger_rule="one_success"
     )
 
     create_cluster >> monitor_emr_cluster
 
-    monitor_emr_cluster >> generate_silver_analysis_riot
-    monitor_emr_cluster >> generate_silver_train_riot
+    monitor_emr_cluster >> [analysis_group, train_group]
 
-    generate_silver_analysis_riot >> analysis_group
-    generate_silver_train_riot >> train_group
+    analysis_group >> gold_group >> branch_task
+    train_group >> branch_task
 
-    analysis_group >> generate_gold_riot
+    branch_task >> ml_group
+    branch_task >> terminate_emr_cluster
 
-    generate_gold_riot >> gold_group
+    ml_group >> terminate_emr_cluster
 
-    gold_group >> terminate_emr_cluster
